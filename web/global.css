@@ -1,0 +1,8 @@
+body {
+   padding: 16px;
+}
+
+:root {
+    --mdc-theme-primary: #0069af;
+    --mdc-theme-secondary: #cccc00;
+}

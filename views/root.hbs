@@ -1,5 +1,9 @@
 <body>
     <h1 class="mdc-typography--headline6">Hallöle</h1>
+     {{#each task.metadata}}
+        <p>ONE</p>
+        {{> input title=this.caption value=this.values.[0] id=this.key}}
+     {{/each}}
 </body>
 
 </html>

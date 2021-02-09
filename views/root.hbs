@@ -1,9 +1,15 @@
 <body>
-    <h1 class="mdc-typography--headline6">Hallöle</h1>
-     {{#each task.metadata}}
-        <p>ONE</p>
-        {{> input title=this.caption value=this.values.[0] id=this.key}}
-     {{/each}}
+   <h1 class="mdc-typography--headline6">Hallöle</h1>
+
+   <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+         {{#eq task.metadata.contractType.values.[0] "rentalContract"}}
+            {{> rentalContract task=task.metadata}}
+            {{else}}
+               {{> supplierContract task=task.metadata}}
+         {{/eq}}
+      </div>
+   </div>
 </body>
 
 </html>

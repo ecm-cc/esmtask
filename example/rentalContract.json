@@ -1,0 +1,97 @@
+{
+    "form": [
+        {
+            "key": "isSubleaseAgreement",
+            "caption": "Handelt es sich um einen Untermietvertrag?",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "hasChanges",
+            "caption": "Wurden Texte im Standard-Untermietvertrag geändert?",
+            "values": [
+                false
+            ]
+        },
+        {
+            "key": "isRentalOffice",
+            "caption": "Handelt es sich um einen Mietvertag für Büroräume?",
+            "values": [
+                false
+            ]
+        },
+        {
+            "key": "isRentalParking",
+            "caption": "Handelt es sich um einen Mietvertag für Stellplätze?",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "isAdditional",
+            "caption": "Handelt es sich um eine Ergänzung/Zusatz/Nachtrag zu einem bereits bestehenden Mietvertrag?",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "rentalObjectAddress",
+            "caption": "Adresse des Mietobjektes",
+            "values": [
+                "Oskar-Jäger-Straße 23, 50825 Köln"
+            ]
+        },
+        {
+            "key": "desiredRentalStart",
+            "caption": "Gewünschter Mietbeginn",
+            "values": [
+                1625094000000
+            ]
+        },
+        {
+            "key": "responsiblePerson",
+            "caption": "Vertragsverantwortlich",
+            "values": [
+                "christopher.dick@able-group.de"
+            ]
+        },
+        {
+            "key": "contractPartner",
+            "caption": "Vertragspartner",
+            "values": [
+                "Manfred Mustermann"
+            ]
+        },
+        {
+            "key": "administrator",
+            "caption": "Verwalter",
+            "values": [
+                "Beathe Beispielfrau"
+            ]
+        },
+        {
+            "key": "commercialContact",
+            "caption": "Kaufmännischer Ansprechpartner",
+            "values": [
+                "Klaus Kaufmann"
+            ]
+        },
+        {
+            "key": "comments",
+            "caption": "Sonstige Bemerkungen",
+            "values": [
+                "Hier gibt es keine weiteren Anmerkungen"
+            ]
+        }
+    ],
+    "attachments": [
+        "9284632"
+    ],
+    "contractType": "rentalContract",
+    "serviceRequestID": "34534",
+    "serviceRequestTechnicalID": "283749263",
+    "serviceRequestTitle": "Prüfung Mietvertrag",
+    "serviceRequestorUPN": "alexander.strutz@able-group.de",
+    "serviceRequestorName": "Alexander Strutz"
+}

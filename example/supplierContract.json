@@ -1,0 +1,85 @@
+{
+    "form": [
+        {
+            "key": "isDirectPurchase",
+            "caption": "Soll die einzukaufende Leistung für einen Kunden im Werk-/Dienstvertrag eingesetzt werden?",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "isOfficeOrParking",
+            "caption": "Handelt es sich um einen Mietvertrag für Büroräume/Stellplätze?",
+            "values": [
+                false
+            ]
+        },
+        {
+            "key": "isGeneralAgreement",
+            "caption": "Handelt es sich um einen Rahmenvertrag?",
+            "values": [
+                false
+            ]
+        },
+        {
+            "key": "isAdditional",
+            "caption": "Handelt es sich um eine Ergänzung/Zusatz/Nachtrag zu einem bereits bestehenden Lieferantenvertrag?            ",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "responsiblePerson",
+            "caption": "Vertragsverantwortlich",
+            "values": [
+                "christopher.dick@able-group.de"
+            ]
+        },
+        {
+            "key": "creditorSAP",
+            "caption": "Kreditor in SAP",
+            "values": [
+                "Kreditor XY"
+            ]
+        },
+        {
+            "key": "commercialContact",
+            "caption": "Kaufmännischer Ansprechpartner",
+            "values": [
+                "Max Mustermann"
+            ]
+        },
+        {
+            "key": "contractSubject",
+            "caption": "Vertragsgegenstand",
+            "values": [
+                "Stellplatz XY"
+            ]
+        },
+        {
+            "key": "contractValue",
+            "caption": "Vertragswert",
+            "values": [
+                12300
+            ]
+        },
+        {
+            "key": "comments",
+            "caption": "Sonstige Bemerkungen",
+            "values": [
+                "Hier gibt es keine weiteren Anmerkungen"
+            ]
+        }
+    ],
+    "attachments": [
+        "927384",
+        "9172532",
+        "9362347"
+    ],
+    "contractType": "supplierContract",
+    "serviceRequestID": "34534",
+    "serviceRequestTechnicalID": "283749263",
+    "serviceRequestTitle": "Prüfung Lieferantenvertrag",
+    "serviceRequestorUPN": "alexander.strutz@able-group.de",
+    "serviceRequestorName": "Alexander Strutz"
+}

@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const hbs = require('express-handlebars');
+const helpers = require('handlebars-helpers')(['comparison']);
 const tenant = require('@ablegroup/tenant')(process.env.systemBaseUri, process.env.SIGNATURE_SECRET);
 const requestId = require('@ablegroup/requestid');
 
@@ -19,9 +20,7 @@ app.engine('hbs', hbs({
     defaultLayout: 'layout',
     layoutsDir: `${__dirname}/views/`,
     partialsDir: `${__dirname}/views/partials/`,
-    helpers: {
-        // helpers,
-    },
+    helpers,
 }));
 app.set('view engine', 'hbs');
 
@@ -30,7 +29,9 @@ app.use(requestId);
 logger.token('tenantId', (req) => req.tenantId);
 logger.token('requestId', (req) => req.requestId);
 
-const rootRouter = require('./routes/root')(assetBasePath);
+const rootRouter = require('./routes/root')();
+const taskRouter = require('./routes/task')(assetBasePath);
+const createRouter = require('./routes/create')();
 
 // eslint-disable-next-line max-len
 app.use(logger('[ctx@49610 rid=":requestId" tn=":tenantId"][http@49610 method=":method" url=":url" millis=":response-time" sbytes=":res[content-length]" status=":status"] '));
@@ -40,6 +41,8 @@ app.use(cookieParser());
 app.use(assetBasePath, express.static(path.join(__dirname, 'web')));
 
 app.use(`${basePath}/`, rootRouter);
+app.use(`${basePath}/task`, taskRouter);
+app.use(`${basePath}/create`, createRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

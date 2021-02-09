@@ -1,5 +1,22 @@
 body {
-   padding: 16px;
+    padding: 16px;
+}
+
+.property-wrapper-left {
+    float: left;
+    width: 48%;
+    padding-top: 5px;
+    margin-right: 2%;
+}
+
+.property-wrapper-right {
+    overflow: hidden;
+    width: 48%;
+    padding-top: 5px;
+}
+
+.property-field {
+    width: 100%;
 }
 
 :root {

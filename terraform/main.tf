@@ -41,6 +41,8 @@ module "serverless_lambda_app" {
   lambda_environment_vars = {
     SIGNATURE_SECRET = "${var.signature_secret}"
     BUILD_VERSION    = "${local.build_version}"
+    IVANTI_API_KEY_STG = "C30D2357566F4B01B86696A8397AA0D6"
+    IVANTI_API_KEY_PROD = "99DCF698F0544FAEBAD9FDC2BA662A5D"
 
     # change to ASSET_BASE_PATH  = "https://${module.asset_cdn.dns_name}/${var.asset_hash}" if asset_cdn is enabled
     ASSET_BASE_PATH = "https://${local.assets_bucket_name}.s3.amazonaws.com/${var.asset_hash}"

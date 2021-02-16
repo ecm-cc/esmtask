@@ -1,0 +1,80 @@
+<body>
+   <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+            <h1 class="mdc-typography--headline6">
+               {{task.subject}}
+            </h1>
+         </div>
+         {{#eq task.metadata.contractType.values.[0] "rentalContract"}}
+            {{> rentalContract task=task.metadata}}
+            {{else}}
+               {{> supplierContract task=task.metadata}}
+         {{/eq}}
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attachments">
+            <h1 class="mdc-typography--subtitle1">
+               Angehangene Dokumente
+            </h1>
+            <ul class="mdc-list mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attachment-list">
+            </ul>
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 button-cell">
+            {{> button title="Neue Akte erstellen" onclick="showCreateContract()"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 button-cell">
+            {{> button title="Mit Akte verknüpfen" onclick="showAlternateContract()"}}
+         </div>
+
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
+            <h1 class="mdc-typography--headline6">
+               Vertragsakte erstellen
+            </h1>
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
+            {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="create-radiobutton"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
+            {{> input title="Vertragsnummer (intern)" id="contractNumberCreate"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
+            {{> input title="Vertragsstatus" id="contractStatus"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
+            {{> input title="Vertragstyp Lieferant" id="contractType"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
+            {{> input title="Geschäftspartnername" id="partnerName"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
+            {{> button title="Speichern" onclick="saveContract()"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 alternate-contract">
+            <h1 class="mdc-typography--headline6">
+               Mit Vertrag verknüpfen
+            </h1>
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 alternate-contract">
+            {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="alternate-radiobutton"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 alternate-contract">
+            {{> input title="Vertragsnummer (intern)" id="contractNumberSearch"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 alternate-contract">
+            {{> input title="Vertragsbezeichnung" id="contractDesignation"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 alternate-contract button-search">
+            {{> button title="Suchen" onclick="searchContract()" additionalclass="button-center"}}
+         </div>
+         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 search-result">
+            <ul class="mdc-list mdc-list--two-line" id="result-list">
+            </ul>
+         </div>
+      </div>
+   </div>
+   {{> snackbar }}
+   {{> dialog question="Wollen Sie die ausgewählten Dokumente verknüpfen?" id="attach-dialog"}}
+   {{> dialog question="Wollen Sie diese Vertragsakte erstellen?" id="create-dialog"}}
+   <span id="data-container" data-id="{{metaData}}" data-task="{{taskString}}"></span>
+</body>
+
+</html>

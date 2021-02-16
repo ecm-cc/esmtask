@@ -1,8 +1,30 @@
-
-   <div class="property-wrapper-left">
-
-   </div>
-
-   <div class="property-wrapper-right">
-
-   </div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isDirectPurchase.caption value=task.isDirectPurchase.values.[0] id="isDirectPurchase"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isOfficeOrParking.caption value=task.isOfficeOrParking.values.[0] id="isOfficeOrParking"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isGeneralAgreement.caption value=task.isGeneralAgreement.values.[0] id="isGeneralAgreement"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isAdditional.caption value=task.isAdditional.values.[0] id="isAdditional"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.responsiblePerson.caption value=task.responsiblePerson.values.[0] id="responsiblePerson" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.creditorSAP.caption value=task.creditorSAP.values.[0] id="creditorSAP" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.commercialContact.caption value=task.commercialContact.values.[0] id="commercialContact" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.contractSubject.caption value=task.contractSubject.values.[0] id="contractSubject" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.contractValue.caption value=task.contractValue.values.[0] id="contractValue" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.comments.caption value=task.comments.values.[0] id="comments" disabled=true}}
+</div>

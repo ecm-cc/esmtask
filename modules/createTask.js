@@ -19,6 +19,16 @@ function buildTaskJSON(postData) {
         caption: 'Vertragsart',
         values: [postData.contractType],
     });
+    task.metadata.push({
+        key: 'serviceRequestTechnicalID',
+        caption: 'Techn. Service Request ID',
+        values: [postData.serviceRequestTechnicalID],
+    });
+    task.metadata.push({
+        key: 'serviceRequestID',
+        caption: 'Service Request ID',
+        values: [postData.serviceRequestID],
+    });
     // Reason: d.velop API
     // eslint-disable-next-line no-underscore-dangle
     task._links = {
@@ -28,11 +38,11 @@ function buildTaskJSON(postData) {
 }
 
 async function createTask(data, config, options) {
-    const HTTPOptions = options;
-    HTTPOptions.url = `${config.host}/task/tasks`;
-    HTTPOptions.method = 'post';
-    HTTPOptions.data = data;
-    const response = await axios(HTTPOptions);
+    const httpOptions = options;
+    httpOptions.url = `${config.host}/task/tasks`;
+    httpOptions.method = 'post';
+    httpOptions.data = data;
+    const response = await axios(httpOptions);
     return response.headers.location;
 }
 

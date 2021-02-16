@@ -23,3 +23,79 @@ body {
     --mdc-theme-primary: #0069af;
     --mdc-theme-secondary: #cccc00;
 }
+
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.mdc-linear-progress {
+    top: 50%;
+}
+
+.mdc-list-item {
+    padding: 0;
+}
+
+.create-contract {
+    display: none;
+}
+
+.alternate-contract {
+    display: none;
+}
+
+.button-center {
+    height: 100%;
+}
+
+.cancel-snackbar {
+    color: white;
+}
+
+.icon-right {
+    position: absolute;
+    right: 50%;
+    font-size: 32px;
+}
+
+/* Icon colors for file types */
+
+.fa-file-csv {
+    color: #9D58B1;
+}
+
+.fa-envelope {
+    color: #F7952C;
+}
+
+.fa-file-edge {
+    color: #1A84B6;
+}
+
+.fa-file-word {
+    color: #1A84B6;
+}
+
+.fa-file-image {
+    color: #00A287;
+}
+
+.fa-file-pdf {
+    color: #EB393B;
+}
+
+.fa-file-powerpoint {
+    color: #C4262A;
+}
+
+.fa-file-excel {
+    color: #05B068;
+}

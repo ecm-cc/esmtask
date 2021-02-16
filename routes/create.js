@@ -17,7 +17,7 @@ module.exports = () => {
             const options = getHTTPOptions();
             const authSessionId = await login(config.host, req.get('Authorization').split(' ')[1]);
             options.headers.Authorization = `Bearer ${authSessionId}`;
-            await createAttachments(postData.attachments, config, options);
+            await createAttachments(postData, config, options);
             await createTask(postData, config, options);
             res.sendStatus(200);
         } catch (err) {

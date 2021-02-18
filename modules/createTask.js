@@ -2,17 +2,17 @@ const axios = require('axios');
 
 module.exports = async (postData, config, options) => {
     const userID = await getUserID(postData.serviceRequestorUPN, config, options);
-    const taskJSON = buildTaskJSON(postData, userID);
+    const taskJSON = await buildTaskJSON(postData, userID, config, options);
     const taskURL = await createTask(taskJSON, config, options);
     await changeTaskID(taskURL, config, options);
 };
 
-function buildTaskJSON(postData, userID) {
+async function buildTaskJSON(postData, userID, config, options) {
     const task = {};
     task.subject = postData.serviceRequestTitle;
     const commentsField = postData.form.find((field) => field.key === 'comments');
     task.description = commentsField.values[0] || '';
-    task.assignees = ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F']; // TODO
+    task.assignees = await getAssignedGroup(postData.contractType, config, options);
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
     task.sender = userID;
     task.metadata = postData.form;
@@ -53,7 +53,7 @@ async function getUserID(userUPN, config, options) {
 }
 
 async function createTask(data, config, options) {
-    const httpOptions = options;
+    const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/task/tasks`;
     httpOptions.method = 'post';
     httpOptions.data = data;
@@ -63,13 +63,25 @@ async function createTask(data, config, options) {
 
 async function changeTaskID(taskURL, config, options) {
     const taskID = taskURL.split('/tasks/')[1];
-    const HTTPOptions = options;
-    HTTPOptions.url = `${config.host}${taskURL}`;
-    HTTPOptions.method = 'patch';
-    HTTPOptions.data = {
+    const httpOptions = JSON.parse(JSON.stringify(options));
+    httpOptions.url = `${config.host}${taskURL}`;
+    httpOptions.method = 'patch';
+    httpOptions.data = {
         _links: {
             form: { href: `/able-esmtask/task?taskID=${taskID}` },
         },
     };
-    await axios(HTTPOptions);
+    await axios(httpOptions);
+}
+
+async function getAssignedGroup(contractType, config, options) {
+    // const groupName = config.groupName[contractType];
+    // const httpOptions = JSON.parse(JSON.stringify(options));
+    // httpOptions.url = `${config.host}/identityprovider/scim/groups`;
+    // const response = await axios(httpOptions);
+    // return response.data.resources.find((group) => group.displayName === groupName).id;
+    // TODO
+    console.log(config.groupName[contractType]);
+    console.log(options);
+    return ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F'];
 }

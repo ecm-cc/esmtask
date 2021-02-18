@@ -6,6 +6,9 @@ let task;
 let metaData;
 let createDialog;
 let attachDialog;
+let selectStatus;
+let selectType;
+let selectPartner;
 const options = {
     headers: {
         Accept: 'application/hal+json',
@@ -34,6 +37,7 @@ function initMDCElements() {
     attachDialog = new mdc.dialog.MDCDialog(document.querySelector('#attach-dialog'));
     createDialog = new mdc.dialog.MDCDialog(document.querySelector('#create-dialog'));
     [].map.call(document.querySelectorAll('.mdc-text-field'), (el) => new mdc.textField.MDCTextField(el));
+    [].map.call(document.querySelectorAll('.mdc-list'), (el) => new mdc.list.MDCList(el));
     $(() => {
         $('.input-disabled').attr('disabled', true);
     });
@@ -45,11 +49,11 @@ function initMDCElements() {
         }
     }
     snackBar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
-    snackBar.timeoutMs = 5000;
+    snackBar.timeoutMs = 10000;
 }
 
 async function loadDocuments() {
-    const httpOptions = options;
+    const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = metaData.documentURL;
     const response = await $.get(httpOptions);
     return response;
@@ -66,7 +70,9 @@ function renderDocuments(documents) {
             listHTML.push(`<li class="mdc-list-item" ${i === 0 ? 'tabindex="0"' : ''}>
             <i class="mdc-list-item__graphic fa-2x ${getFileTypeIcon(fileType)} fas" aria-hidden="true">
             </i>
-            <span class="mdc-list-item__text">${fileName}.${fileType}</span>
+            <a class="href_list" href="${document._links.details.href}" target="dapi_navigate">
+                <span class="mdc-list-item__text">${fileName}.${fileType}</span>
+            </a>
          </li>`);
         });
         if (documents.items.length === 0) {
@@ -108,8 +114,63 @@ function getFileTypeIcon(fileType) {
 }
 
 function showCreateContract() {
+    showOverlay();
     $('.button-cell').hide();
+    loadDropdowns().then(() => {
+        $('.create-contract').show();
+        hideOverlay();
+    });
     $('.create-contract').show();
+    hideOverlay();
+}
+
+async function loadDropdowns() {
+    await loadDropdown(metaData.keys.contractType, 'option-list-contractType');
+    await loadDropdown(metaData.keys.partnerName, 'option-list-partnerName');
+    await loadDropdown(metaData.keys.contractStatus, 'option-list-contractStatus');
+    selectStatus = new mdc.select.MDCSelect(document.querySelector('#contractStatus'));
+    selectType = new mdc.select.MDCSelect(document.querySelector('#contractType'));
+    selectPartner = new mdc.select.MDCSelect(document.querySelector('#partnerName'));
+}
+
+async function loadDropdown(key, listID) {
+    const dropdownValues = await $.ajax({
+        method: 'POST',
+        url: `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/validvalues/p/${key}`,
+        headers: {
+            Accept: 'application/hal+json',
+            'Content-Type': 'application/hal+json',
+        },
+        data: getDMSBody(),
+    });
+    dropdownValues.values.forEach((type) => {
+        $(`#${listID}`).append(`
+            <li class="mdc-list-item" data-value="${type.value}">
+                <span class="mdc-list-item__ripple"></span>
+                <span class="mdc-list-item__text">${type.value}</span>
+            </li>
+        `);
+    });
+}
+
+function getDMSBody() {
+    return JSON.stringify({
+        dossierId: null,
+        extendedProperties: {},
+        multivalueExtendedProperties: {},
+        objectDefinitionId: metaData.keys.generalContractCategory, // TODO: Kundenrahmenvertrag
+        remarks: {},
+        storeObject: {
+            masterFileName: null, filename: null, parentId: null, dmsObjectId: null, displayValue: null,
+        },
+        displayValue: null,
+        dmsObjectId: null,
+        filename: null,
+        masterFileName: null,
+        parentId: null,
+        systemProperties: {},
+        type: 2,
+    });
 }
 
 function showAlternateContract() {
@@ -122,15 +183,15 @@ function saveContract() {
         failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
         return;
     }
-    if (!$('#contractNumberCreate').val() || !$('#contractStatus').val() || $('#contractType').val() || $('#partnerName').val()) {
+    if (!$('#contractNumberCreate').val() || selectStatus.value === '' || selectType.value === '' || selectPartner.value === '') {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder!');
         return;
     }
     const postData = {
         contractNumber: $('#contractNumberCreate').val(),
-        contractStatus: $('#contractStatus').val(),
-        contractType: $('#contractType').val(),
-        partnerName: $('#partnerName').val(),
+        contractStatus: selectStatus.value,
+        contractType: selectType.value,
+        partnerName: selectPartner.value,
         categoryKey: $('.option-1').is(':checked') ? metaData.keys.singleContractCategory : metaData.keys.generalContractCategory,
     };
     createDialog.open();

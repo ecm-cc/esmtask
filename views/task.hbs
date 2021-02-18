@@ -37,13 +37,13 @@
             {{> input title="Vertragsnummer (intern)" id="contractNumberCreate"}}
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> input title="Vertragsstatus" id="contractStatus"}}
+            {{> dropdown title="Vertragsstatus" id="contractStatus"}}
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> input title="Vertragstyp Lieferant" id="contractType"}}
+            {{> dropdown title="Vertragstyp Lieferant" id="contractType"}}
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> input title="Geschäftspartnername" id="partnerName"}}
+            {{> dropdown title="Geschäftspartnername" id="partnerName"}}
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
             {{> button title="Speichern" onclick="saveContract()"}}

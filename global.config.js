@@ -11,6 +11,10 @@ function getLocalConfig(tenant) {
         ivantiAttachmentURL: 'https://ablegroup-stg.saasiteu.com/api/rest/Attachment?ID=',
         ivantiStatusURL: 'https://ablegroup-stg.saasiteu.com/api/odata/businessobject/ServiceReqs',
         ivantiAPIKey: process.env.IVANTI_API_KEY_STG,
+        groupName: {
+            rentalContract: 'BA_ECM_CS_IMMO',
+            supplierContract: 'BA_ECM_CS_EINKAUF',
+        },
     };
     // QAS
     case '197': return {

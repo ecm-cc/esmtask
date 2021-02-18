@@ -7,7 +7,7 @@ let config;
 module.exports = async (contract, documentURL, givenOptions, localConfig) => {
     config = localConfig;
     options = givenOptions;
-    const httpOptions = options;
+    const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = documentURL;
     const response = await axios(httpOptions);
     const promises = [];

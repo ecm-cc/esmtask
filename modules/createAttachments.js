@@ -21,7 +21,7 @@ async function createAttachment(postData, attachmentID, config, options) {
 async function downloadAttachment(attachmentID, config) {
     const ivantiOptions = {
         method: 'get',
-        url: config.ivantiURL + attachmentID,
+        url: config.ivantiAttachmentURL + attachmentID,
         headers: {
             Authorization: `rest_api_key=${config.ivantiAPIKey}`,
         },

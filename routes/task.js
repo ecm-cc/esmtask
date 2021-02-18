@@ -4,6 +4,8 @@ const propertyMapping = require('@ablegroup/propertymapping');
 const loadTask = require('../modules/loadTask');
 const moveDocuments = require('../modules/moveDocuments');
 const setTaskState = require('../modules/setTaskState');
+const createContract = require('../modules/createContract');
+const completeServiceRequest = require('../modules/completeServiceRequest');
 const configLoader = require('../global.config');
 
 module.exports = (assetBasePath) => {
@@ -23,16 +25,28 @@ module.exports = (assetBasePath) => {
                 });
             },
             'text/html': () => {
-                res.render('task', {
-                    title: task.subject,
-                    stylesheet: `${assetBasePath}/global.css`,
-                    script: `${assetBasePath}/task.js`,
-                    fontawesome: `${assetBasePath}/fontawesome.js`,
-                    body: '/../views/task.hbs',
-                    task,
-                    taskString: JSON.stringify(task),
-                    metaData: JSON.stringify(metaData),
-                });
+                if (task.metadata.linkedContract.values[0] === '0') {
+                    res.render('task', {
+                        title: task.subject,
+                        stylesheet: `${assetBasePath}/global.css`,
+                        script: `${assetBasePath}/task.js`,
+                        fontawesome: `${assetBasePath}/fontawesome.js`,
+                        body: '/../views/task.hbs',
+                        task,
+                        taskString: JSON.stringify(task),
+                        metaData: JSON.stringify(metaData),
+                    });
+                } else {
+                    res.render('succeded', {
+                        title: task.subject,
+                        stylesheet: `${assetBasePath}/global.css`,
+                        script: `${assetBasePath}/succeded.js`,
+                        body: '/../views/succeded.hbs',
+                        task,
+                        taskString: JSON.stringify(task),
+                        metaData: JSON.stringify(metaData),
+                    });
+                }
             },
             default() {
                 res.status(406).send('Not Acceptable');
@@ -40,18 +54,59 @@ module.exports = (assetBasePath) => {
         });
     });
 
+    router.post('/', async (req, res) => {
+        try {
+            console.log(`TenantId:${req.tenantId}`);
+            console.log(`SystemBaseUri:${req.systemBaseUri}`);
+            const config = configLoader.getLocalConfig(req.tenantId);
+            const options = getHTTPOptions(req);
+            const postData = req.body;
+            const { taskID } = req.query;
+            const task = await loadTask(taskID, options, config);
+            const documentURL = await getDocumentURL(task, config);
+            const contractID = await createContract(postData, options, config);
+            await moveDocuments(contractID, documentURL, options, config);
+            await setTaskState(task, contractID, options, config);
+            res.status(200).send('OK');
+        } catch (err) {
+            console.error(err);
+            res.status(400).send(err.response ? err.response.data : err);
+        }
+    });
+
     router.put('/', async (req, res) => {
-        console.log(`TenantId:${req.tenantId}`);
-        console.log(`SystemBaseUri:${req.systemBaseUri}`);
-        const config = configLoader.getLocalConfig(req.tenantId);
-        const options = getHTTPOptions(req);
-        const { contract } = req.query;
-        const { taskID } = req.query;
-        const task = await loadTask(taskID, options, config);
-        const documentURL = await getDocumentURL(task, config);
-        await moveDocuments(contract, documentURL, options, config);
-        await setTaskState(task, options, config);
-        res.sendStatus(200);
+        try {
+            console.log(`TenantId:${req.tenantId}`);
+            console.log(`SystemBaseUri:${req.systemBaseUri}`);
+            const config = configLoader.getLocalConfig(req.tenantId);
+            const options = getHTTPOptions(req);
+            const { contract } = req.query;
+            const { taskID } = req.query;
+            const task = await loadTask(taskID, options, config);
+            const documentURL = await getDocumentURL(task, config);
+            await moveDocuments(contract, documentURL, options, config);
+            await setTaskState(task, contract, options, config);
+            res.status(200).send('OK');
+        } catch (err) {
+            console.error(err);
+            res.status(400).send(err.response.data ? err.response.data : err);
+        }
+    });
+
+    router.delete('/', async (req, res) => {
+        try {
+            console.log(`TenantId:${req.tenantId}`);
+            console.log(`SystemBaseUri:${req.systemBaseUri}`);
+            const config = configLoader.getLocalConfig(req.tenantId);
+            const options = getHTTPOptions(req);
+            const { taskID } = req.query;
+            const task = await loadTask(taskID, options, config);
+            await completeServiceRequest(task.metadata.serviceRequestTechnicalID.values[0], config, options);
+            res.status(200).send({});
+        } catch (err) {
+            console.error(err);
+            res.status(400).send(err.response.data ? err.response.data : err);
+        }
     });
     return router;
 };
@@ -76,6 +131,7 @@ async function getMetaData(task, config) {
 }
 
 async function getDocumentURL(task, config) {
+    propertyMapping.initDatabase();
     const esmDocumentCategory = await propertyMapping.getCategory(config.stage, null, null, 'ESM-Dokumente');
     const esmDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, esmDocumentCategory.categoryID);
     const technicalIDProperty = esmDocumentProperties.find((property) => property.displayname === 'ESM techn. ID').propertyKey;

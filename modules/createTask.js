@@ -1,18 +1,20 @@
 const axios = require('axios');
 
 module.exports = async (postData, config, options) => {
-    const taskJSON = buildTaskJSON(postData);
+    const userID = await getUserID(postData.serviceRequestorUPN, config, options);
+    const taskJSON = buildTaskJSON(postData, userID);
     const taskURL = await createTask(taskJSON, config, options);
     await changeTaskID(taskURL, config, options);
 };
 
-function buildTaskJSON(postData) {
+function buildTaskJSON(postData, userID) {
     const task = {};
     task.subject = postData.serviceRequestTitle;
     const commentsField = postData.form.find((field) => field.key === 'comments');
     task.description = commentsField.values[0] || '';
-    task.assignees = ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61']; // TODO
+    task.assignees = ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F']; // TODO
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
+    task.sender = userID;
     task.metadata = postData.form;
     task.metadata.push({
         key: 'contractType',
@@ -29,12 +31,25 @@ function buildTaskJSON(postData) {
         caption: 'Service Request ID',
         values: [postData.serviceRequestID],
     });
+    task.metadata.push({
+        key: 'linkedContract',
+        caption: 'Verknüpfter Vertrag',
+        values: [0],
+    });
     // Reason: d.velop API
     // eslint-disable-next-line no-underscore-dangle
     task._links = {
         form: { href: '/able-esmtask/task' },
     };
     return task;
+}
+
+async function getUserID(userUPN, config, options) {
+    const httpOptions = JSON.parse(JSON.stringify(options));
+    httpOptions.url = `${config.host}/identityprovider/scim/users`;
+    const userSCIM = await axios(httpOptions);
+    const userID = userSCIM.data.resources.find((user) => user.userName === userUPN).id;
+    return userID;
 }
 
 async function createTask(data, config, options) {

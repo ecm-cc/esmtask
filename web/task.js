@@ -57,7 +57,7 @@ async function loadDocuments() {
 
 function renderDocuments(documents) {
     if (documents.items.length === 0) {
-        $('.attachments').hide();
+        $('.attachment-list').html('Es wurden keine Dokumente gefunden.');
     } else {
         const listHTML = [];
         documents.items.forEach((document, i) => {
@@ -69,7 +69,11 @@ function renderDocuments(documents) {
             <span class="mdc-list-item__text">${fileName}.${fileType}</span>
          </li>`);
         });
+        if (documents.items.length === 0) {
+            listHTML.push('Es wurden keine Ergebnisse gefunden.');
+        }
         $('.attachment-list').append(listHTML.join(''));
+        $('.attachments').show();
     }
 }
 
@@ -114,7 +118,41 @@ function showAlternateContract() {
 }
 
 function saveContract() {
-    console.log('Try save');
+    if (!$('.option-1').is(':checked') && !$('.option-2').is(':checked')) {
+        failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
+        return;
+    }
+    if (!$('#contractNumberCreate').val() || !$('#contractStatus').val() || $('#contractType').val() || $('#partnerName').val()) {
+        failSnackbar('Bitte befüllen Sie alle Eingabefelder!');
+        return;
+    }
+    const postData = {
+        contractNumber: $('#contractNumberCreate').val(),
+        contractStatus: $('#contractStatus').val(),
+        contractType: $('#contractType').val(),
+        partnerName: $('#partnerName').val(),
+        categoryKey: $('.option-1').is(':checked') ? metaData.keys.singleContractCategory : metaData.keys.generalContractCategory,
+    };
+    createDialog.open();
+    createDialog.listen('MDCDialog:closed', (reason) => {
+        if (reason.detail.action === 'ok') {
+            showOverlay();
+            $.ajax({
+                timeout: 90000,
+                method: 'POST',
+                url: `/able-esmtask/task?taskID=${task.id}`,
+                data: postData,
+            }).done(() => {
+                hideOverlay();
+                successSnackbar('Die Verknüpfung wurde erstellt, Seite wird neu geladen..');
+                location.reload();
+            }).fail((err) => {
+                console.error(err);
+                failSnackbar(`Die Verknüpfung konnte aufgrund eines Fehlers nicht durchgeführt werden: ${err.responseJSON ? err.responseJSON.reason : err}`);
+                hideOverlay();
+            });
+        }
+    });
 }
 
 function searchContract() {
@@ -188,6 +226,7 @@ function attachContract(documentID) {
         if (reason.detail.action === 'ok') {
             showOverlay();
             $.ajax({
+                timeout: 90000,
                 method: 'PUT',
                 url: `/able-esmtask/task?contract=${documentID}&taskID=${task.id}`,
             }).done(() => {
@@ -196,7 +235,7 @@ function attachContract(documentID) {
                 location.reload();
             }).fail((err) => {
                 console.error(err);
-                failSnackbar(`Die Verknüpfung konnte aufgrund eines Fehlers nicht durchgeführt werden: ${err.message ? err.message : err}`);
+                failSnackbar(`Die Verknüpfung konnte aufgrund eines Fehlers nicht durchgeführt werden: ${err.responseJSON ? err.responseJSON.reason : err}`);
                 hideOverlay();
             });
         }

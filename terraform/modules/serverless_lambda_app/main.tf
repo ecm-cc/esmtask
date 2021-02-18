@@ -38,7 +38,7 @@ resource "aws_lambda_function" "service" {
   runtime          = "${var.lambda_runtime}"
   memory_size      = "${var.lambda_memory_size}"
   publish          = true
-  timeout          = 11
+  timeout          = 90
 
   # Environment vars are specific to each version of the lambda function and can't be changed after deployment.
   # So each change of the vars requires a redeployment of the lambda function to have an effect.

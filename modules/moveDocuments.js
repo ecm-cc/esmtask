@@ -20,7 +20,7 @@ module.exports = async (contract, documentURL, givenOptions, localConfig) => {
 async function moveDocument(document, contract) {
     const documentBuffer = await downloadDocument(document, options, config);
     const documentUri = await uploadDocument(documentBuffer, config, options);
-    const documentMeta = getDocumentMeta(document.id);
+    const documentMeta = await getDocumentMeta(document.id);
     await createDocument(documentMeta, contract, documentUri, config, options);
     await deleteDocument(documentMeta, config, options);
 }
@@ -54,8 +54,10 @@ async function getDocumentMeta(documentID) {
 async function createDocument(documentMeta, contract, contentLocationUri) {
     const filename = documentMeta.systemProperties.find((prop) => prop.id === 'property_filename').value;
     propertyMapping.initDatabase();
-    const contractCategory = await getContractCategory(contract, config, options);
-    const contractProperties = await propertyMapping.getPropertiesByCategory(config.stage, contractCategory.categoryID);
+    const contractCategoryName = await getContractCategory(contract, config, options);
+    const contractDocumentCategories = await propertyMapping.getCategoryByParent(config.stage, null, null, contractCategoryName);
+    const contractDocumentCategory = contractDocumentCategories.find((category) => category.displayname.includes('unterlage')); // Needed, but not good
+    const contractDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, contractDocumentCategory.categoryID);
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.method = 'post';
     httpOptions.headers['Content-Type'] = 'application/hal+json';
@@ -69,15 +71,20 @@ async function createDocument(documentMeta, contract, contentLocationUri) {
         sourceProperties: {
             properties: [
                 {
-                    key: contractProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
-                    values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID')],
+                    // TODO: Change for Kundenrahmenvertrag
+                    key: contractDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,
+                    values: ['Anlage'],
                 },
                 {
-                    key: contractProperties.find((property) => property.displayname === 'ESM techn. ID').propertyKey,
-                    values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM techn. ID')],
+                    key: contractDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
+                    values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID').value],
                 },
                 {
-                    key: contractProperties.find((property) => property.displayname === 'ESM Status').propertyKey,
+                    key: contractDocumentProperties.find((property) => property.displayname === 'ESM techn. ID').propertyKey,
+                    values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM techn. ID').value],
+                },
+                {
+                    key: contractDocumentProperties.find((property) => property.displayname === 'ESM Status').propertyKey,
                     values: ['Offen'],
                 },
             ],
@@ -90,7 +97,7 @@ async function getContractCategory(contract) {
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2/${contract}`;
     const response = await axios(httpOptions);
-    return response.data.category.id;
+    return response.data.category;
 }
 
 async function deleteDocument(documentMeta) {

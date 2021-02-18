@@ -8,7 +8,8 @@ function getLocalConfig(tenant) {
         host: 'https://able-group-dev.d-velop.cloud',
         repositoryId: '1a2cde3f-2913-3dc2-4a2e-e623459ac23a',
         documentCategory: 'ESMD',
-        ivantiURL: 'https://ablegroup-stg.saasiteu.com/api/rest/Attachment?ID=',
+        ivantiAttachmentURL: 'https://ablegroup-stg.saasiteu.com/api/rest/Attachment?ID=',
+        ivantiStatusURL: 'https://ablegroup-stg.saasiteu.com/api/odata/businessobject/ServiceReqs',
         ivantiAPIKey: process.env.IVANTI_API_KEY_STG,
     };
     // QAS

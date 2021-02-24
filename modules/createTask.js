@@ -12,7 +12,7 @@ async function buildTaskJSON(postData, userID, config, options) {
     task.subject = postData.serviceRequestTitle;
     const commentsField = postData.form.find((field) => field.key === 'comments');
     task.description = commentsField.values[0] || '';
-    task.assignees = await getAssignedGroup(postData.contractType, config, options);
+    task.assignees = await getAssignedGroup(postData.contractType, postData.isDebug, config, options);
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
     task.sender = userID;
     task.metadata = postData.form;
@@ -35,6 +35,11 @@ async function buildTaskJSON(postData, userID, config, options) {
         key: 'linkedContract',
         caption: 'Verknüpfter Vertrag',
         values: [0],
+    });
+    task.metadata.push({
+        key: 'isDebug',
+        caption: 'Testaufgabe',
+        values: [postData.isDebug || false],
     });
     // Reason: d.velop API
     // eslint-disable-next-line no-underscore-dangle
@@ -63,6 +68,7 @@ async function createTask(data, config, options) {
 
 async function changeTaskID(taskURL, config, options) {
     const taskID = taskURL.split('/tasks/')[1];
+    console.log(`Creating task ${taskID}`);
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}${taskURL}`;
     httpOptions.method = 'patch';
@@ -74,14 +80,14 @@ async function changeTaskID(taskURL, config, options) {
     await axios(httpOptions);
 }
 
-async function getAssignedGroup(contractType, config, options) {
-    // const groupName = config.groupName[contractType];
-    // const httpOptions = JSON.parse(JSON.stringify(options));
-    // httpOptions.url = `${config.host}/identityprovider/scim/groups`;
-    // const response = await axios(httpOptions);
-    // return response.data.resources.find((group) => group.displayName === groupName).id;
-    // TODO
-    console.log(config.groupName[contractType]);
-    console.log(options);
-    return ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F'];
+async function getAssignedGroup(contractType, isDebug, config, options) {
+    if (isDebug) {
+        return ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F'];
+    }
+    const groupName = config.groupName[contractType];
+    const httpOptions = JSON.parse(JSON.stringify(options));
+    httpOptions.url = `${config.host}/identityprovider/scim/groups`;
+    const response = await axios(httpOptions);
+    const groupID = response.data.resources.find((group) => group.displayName === groupName).id;
+    return [groupID];
 }

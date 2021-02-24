@@ -29,6 +29,13 @@
             <h1 class="mdc-typography--headline6">
                Vertragsakte erstellen
             </h1>
+            <div class="mdc-menu-surface--anchor">
+               <div class="mdc-menu mdc-menu-surface" id="partner-options">
+                  <ul class="mdc-list" id="partner-list" role="menu" aria-hidden="true" aria-orientation="vertical"
+                     tabindex="-1">
+                  </ul>
+               </div>
+            </div>
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
             {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="create-radiobutton"}}
@@ -43,7 +50,7 @@
             {{> dropdown title="Vertragstyp Lieferant" id="contractType"}}
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> dropdown title="Geschäftspartnername" id="partnerName"}}
+            {{> input title="Geschäftspartnername" id="partnerName" helper="Bitte mindestens drei Zeichen eingeben"}}
          </div>
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
             {{> button title="Speichern" onclick="saveContract()"}}

@@ -12,7 +12,7 @@ module.exports = () => {
         console.log(`TenantId:${req.tenantId}`);
         console.log(`SystemBaseUri:${req.systemBaseUri}`);
         try {
-            const postData = req.body;
+            const postData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
             const config = configLoader.getLocalConfig(req.tenantId);
             const options = getHTTPOptions();
             const authSessionId = await login(config.host, req.get('Authorization').split(' ')[1]);

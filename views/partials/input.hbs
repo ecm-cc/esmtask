@@ -9,3 +9,10 @@
   <input type="text" id="{{id}}" class="mdc-text-field__input {{#if disabled}}input-disabled{{/if}}"
     aria-labelledby="{{id}}-label" value="{{#if value}}{{value}}{{/if}}">
 </label>
+{{#if helper}}
+<div class="mdc-text-field-helper-line">
+  <div id="username-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
+    {{helper}}
+  </div>
+</div>
+{{/if}}

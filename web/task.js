@@ -6,9 +6,10 @@ let task;
 let metaData;
 let createDialog;
 let attachDialog;
+let menu;
 let selectStatus;
 let selectType;
-let selectPartner;
+let isValidPartner;
 const options = {
     headers: {
         Accept: 'application/hal+json',
@@ -36,6 +37,7 @@ function initMDCElements() {
     formField.input = radio;
     attachDialog = new mdc.dialog.MDCDialog(document.querySelector('#attach-dialog'));
     createDialog = new mdc.dialog.MDCDialog(document.querySelector('#create-dialog'));
+    menu = new mdc.menu.MDCMenu(document.querySelector('#partner-options'));
     [].map.call(document.querySelectorAll('.mdc-text-field'), (el) => new mdc.textField.MDCTextField(el));
     [].map.call(document.querySelectorAll('.mdc-list'), (el) => new mdc.list.MDCList(el));
     $(() => {
@@ -126,38 +128,46 @@ function showCreateContract() {
 
 async function loadDropdowns() {
     await loadDropdown(metaData.keys.contractType, 'option-list-contractType');
-    await loadDropdown(metaData.keys.partnerName, 'option-list-partnerName');
     await loadDropdown(metaData.keys.contractStatus, 'option-list-contractStatus');
+    $('#partnerName').on('keyup', async () => { await listenPartnerInput(); });
     selectStatus = new mdc.select.MDCSelect(document.querySelector('#contractStatus'));
     selectType = new mdc.select.MDCSelect(document.querySelector('#contractType'));
-    selectPartner = new mdc.select.MDCSelect(document.querySelector('#partnerName'));
 }
 
-async function loadDropdown(key, listID) {
+async function loadDropdown(key, listID, searchString) {
     const dropdownValues = await $.ajax({
         method: 'POST',
-        url: `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/validvalues/p/${key}`,
+        url: `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/validvalues/p/${key}?rownumber=1`,
         headers: {
             Accept: 'application/hal+json',
             'Content-Type': 'application/hal+json',
         },
-        data: getDMSBody(),
+        data: getDMSBody(searchString),
     });
-    dropdownValues.values.forEach((type) => {
-        $(`#${listID}`).append(`
-            <li class="mdc-list-item" data-value="${type.value}">
-                <span class="mdc-list-item__ripple"></span>
-                <span class="mdc-list-item__text">${type.value}</span>
-            </li>
-        `);
-    });
+    if (listID) {
+        dropdownValues.values.forEach((type) => {
+            $(`#${listID}`).append(`
+                <li class="mdc-list-item" data-value="${type.value}">
+                    <span class="mdc-list-item__ripple"></span>
+                    <span class="mdc-list-item__text">${type.value}</span>
+                </li>
+            `);
+        });
+    }
+    return dropdownValues;
 }
 
-function getDMSBody() {
+function getDMSBody(searchString) {
+    const extendedProperties = {};
+    const multivalueExtendedProperties = {};
+    if (searchString) {
+        extendedProperties[metaData.keys.partnerName] = searchString;
+        multivalueExtendedProperties[metaData.keys.partnerName] = { 1: searchString };
+    }
     return JSON.stringify({
         dossierId: null,
-        extendedProperties: {},
-        multivalueExtendedProperties: {},
+        extendedProperties,
+        multivalueExtendedProperties,
         objectDefinitionId: metaData.keys.generalContractCategory, // TODO: Kundenrahmenvertrag
         remarks: {},
         storeObject: {
@@ -173,6 +183,35 @@ function getDMSBody() {
     });
 }
 
+async function listenPartnerInput() {
+    const input = $('#partnerName').val();
+    if (input.length > 2) {
+        const results = await loadDropdown(metaData.keys.partnerName, null, input);
+        const partnerHTML = [];
+        results.values.forEach((partnerName, i) => partnerHTML.push(`
+        <li class="mdc-list-item" role="menuitem" onclick="setPartner('${partnerName.value}', ${i})">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">${partnerName.value}</span>
+        </li>`));
+        if (results.values.length === 0) {
+            partnerHTML.push(`
+            <li class="mdc-list-item mdc-list-item--disabled" role="menuitem">
+                <span class="mdc-list-item__ripple"></span>
+                <span class="mdc-list-item__text">Keine Partner gefunden</span>
+            </li>`);
+        }
+        $('#partner-list').html(partnerHTML.join(''));
+        menu.open = true;
+        $('#partnerName').focus();
+    }
+    isValidPartner = false;
+}
+
+function setPartner(partnerName) {
+    isValidPartner = true;
+    $('#partnerName').val(partnerName);
+}
+
 function showAlternateContract() {
     $('.button-cell').hide();
     $('.alternate-contract').show();
@@ -183,7 +222,7 @@ function saveContract() {
         failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
         return;
     }
-    if (!$('#contractNumberCreate').val() || selectStatus.value === '' || selectType.value === '' || selectPartner.value === '') {
+    if (!$('#contractNumberCreate').val() || selectStatus.value === '' || selectType.value === '' || isValidPartner) {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder!');
         return;
     }
@@ -191,7 +230,7 @@ function saveContract() {
         contractNumber: $('#contractNumberCreate').val(),
         contractStatus: selectStatus.value,
         contractType: selectType.value,
-        partnerName: selectPartner.value,
+        partnerName: $('#partnerName').val(),
         categoryKey: $('.option-1').is(':checked') ? metaData.keys.singleContractCategory : metaData.keys.generalContractCategory,
     };
     createDialog.open();

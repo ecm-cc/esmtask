@@ -75,6 +75,10 @@ body {
     text-decoration: none;
  }
 
+ #partner-options {
+     width: 50% !important;
+ }
+
 /* Icon colors for file types */
 
 .fa-file-csv {

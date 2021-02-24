@@ -69,8 +69,10 @@ module.exports = (assetBasePath) => {
             const documentURL = await getDocumentURL(task, config);
             const contractID = await createContract(postData, options, config);
             await moveDocuments(contractID, documentURL, options, config);
-            const ivantiBody = await getIvantiBody(contractID, config, options);
-            await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
+            if (!task.metadata.isDebug || !task.metadata.isDebug.values[0] || !task.metadata.isDebug.values[0] !== 'false') {
+                const ivantiBody = await getIvantiBody(contractID, config, options);
+                await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
+            }
             await setTaskState(task, contractID, options, config);
             res.status(200).send('OK');
         } catch (err) {
@@ -91,8 +93,10 @@ module.exports = (assetBasePath) => {
             const task = await loadTask(taskID, options, config);
             const documentURL = await getDocumentURL(task, config);
             await moveDocuments(contract, documentURL, options, config);
-            const ivantiBody = await getIvantiBody(contract, config, options);
-            await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
+            if (!task.metadata.isDebug || !task.metadata.isDebug.values[0] || !task.metadata.isDebug.values[0] !== 'false') {
+                const ivantiBody = await getIvantiBody(contract, config, options);
+                await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
+            }
             await setTaskState(task, contract, options, config);
             res.status(200).send('OK');
         } catch (err) {
@@ -110,7 +114,9 @@ module.exports = (assetBasePath) => {
             const options = getHTTPOptions(req);
             const { taskID } = req.query;
             const task = await loadTask(taskID, options, config);
-            await updateServiceRequest(true, task.metadata.serviceRequestTechnicalID.values[0], null, config);
+            if (!task.metadata.isDebug || !task.metadata.isDebug.values[0] || !task.metadata.isDebug.values[0] !== 'false') {
+                await updateServiceRequest(true, task.metadata.serviceRequestTechnicalID.values[0], null, config);
+            }
             res.status(200).send({});
         } catch (err) {
             console.error(err);

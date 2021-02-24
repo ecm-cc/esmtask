@@ -9,7 +9,7 @@ let attachDialog;
 let menu;
 let selectStatus;
 let selectType;
-let isValidPartner;
+let isValidPartner = false;
 const options = {
     headers: {
         Accept: 'application/hal+json',
@@ -52,6 +52,13 @@ function initMDCElements() {
     }
     snackBar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
     snackBar.timeoutMs = 10000;
+    if ($('#desiredRentalStart').val()) {
+        const date = new Date($('#desiredRentalStart').val());
+        const dateOptions = {
+            year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin',
+        };
+        $('#desiredRentalStart').val(date.toLocaleString('de-DE', dateOptions));
+    }
 }
 
 async function loadDocuments() {
@@ -184,6 +191,7 @@ function getDMSBody(searchString) {
 }
 
 async function listenPartnerInput() {
+    isValidPartner = false;
     const input = $('#partnerName').val();
     if (input.length > 2) {
         const results = await loadDropdown(metaData.keys.partnerName, null, input);
@@ -204,7 +212,6 @@ async function listenPartnerInput() {
         menu.open = true;
         $('#partnerName').focus();
     }
-    isValidPartner = false;
 }
 
 function setPartner(partnerName) {
@@ -222,7 +229,7 @@ function saveContract() {
         failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
         return;
     }
-    if (!$('#contractNumberCreate').val() || selectStatus.value === '' || selectType.value === '' || isValidPartner) {
+    if (!$('#contractNumberCreate').val() || selectStatus.value === '' || selectType.value === '' || !isValidPartner) {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder!');
         return;
     }

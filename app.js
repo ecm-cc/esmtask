@@ -20,7 +20,16 @@ app.engine('hbs', hbs({
     defaultLayout: 'layout',
     layoutsDir: `${__dirname}/views/`,
     partialsDir: `${__dirname}/views/partials/`,
-    helpers,
+    helpers: {
+        helpers,
+        readableTime(timeString) {
+            const date = new Date(timeString);
+            const dateOptions = {
+                year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin',
+            };
+            return date.toLocaleString('de-DE', dateOptions);
+        },
+    },
 }));
 app.set('view engine', 'hbs');
 

@@ -22,7 +22,11 @@ async function moveDocument(document, contract) {
     const documentUri = await uploadDocument(documentBuffer, config, options);
     const documentMeta = await getDocumentMeta(document.id);
     await createDocument(documentMeta, contract, documentUri, config, options);
-    await deleteDocument(documentMeta, config, options);
+    try {
+        await deleteDocument(documentMeta, config, options);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 async function downloadDocument(document) {
@@ -64,7 +68,6 @@ async function createDocument(documentMeta, contract, contentLocationUri) {
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2m`;
     httpOptions.data = {
         filename,
-        // sourceCategory: esmDocumentCategory.categoryKey,
         sourceId: `/dms/r/${config.repositoryId}/source`,
         contentLocationUri,
         parentId: contract,

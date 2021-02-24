@@ -69,7 +69,7 @@ module.exports = (assetBasePath) => {
             const documentURL = await getDocumentURL(task, config);
             const contractID = await createContract(postData, options, config);
             await moveDocuments(contractID, documentURL, options, config);
-            if (!task.metadata.isDebug || !task.metadata.isDebug.values[0] || !task.metadata.isDebug.values[0] !== 'false') {
+            if (!isDebug(task)) {
                 const ivantiBody = await getIvantiBody(contractID, config, options);
                 await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
             }
@@ -93,7 +93,7 @@ module.exports = (assetBasePath) => {
             const task = await loadTask(taskID, options, config);
             const documentURL = await getDocumentURL(task, config);
             await moveDocuments(contract, documentURL, options, config);
-            if (!task.metadata.isDebug || !task.metadata.isDebug.values[0] || !task.metadata.isDebug.values[0] !== 'false') {
+            if (!isDebug(task)) {
                 const ivantiBody = await getIvantiBody(contract, config, options);
                 await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
             }
@@ -114,7 +114,7 @@ module.exports = (assetBasePath) => {
             const options = getHTTPOptions(req);
             const { taskID } = req.query;
             const task = await loadTask(taskID, options, config);
-            if (!task.metadata.isDebug || !task.metadata.isDebug.values[0] || !task.metadata.isDebug.values[0] !== 'false') {
+            if (!isDebug(task)) {
                 await updateServiceRequest(true, task.metadata.serviceRequestTechnicalID.values[0], null, config);
             }
             res.status(200).send({});
@@ -125,6 +125,10 @@ module.exports = (assetBasePath) => {
     });
     return router;
 };
+
+function isDebug(task) {
+    return task.metadata.isDebug && task.metadata.isDebug.values[0] && (task.metadata.isDebug.values[0] === 'true' || task.metadata.isDebug.values[0] === true);
+}
 
 async function getMetaData(task, config) {
     propertyMapping.initDatabase();

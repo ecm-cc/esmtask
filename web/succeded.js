@@ -23,6 +23,17 @@ function initMDCElements() {
     dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
     snackBar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
     snackBar.timeoutMs = 5000;
+    [].map.call(document.querySelectorAll('.mdc-text-field'), (el) => new mdc.textField.MDCTextField(el));
+    $(() => {
+        $('.input-disabled').attr('disabled', true);
+    });
+    if ($('#desiredRentalStart').val()) {
+        const date = new Date($('#desiredRentalStart').val());
+        const dateOptions = {
+            year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin',
+        };
+        $('#desiredRentalStart').val(date.toLocaleString('de-DE', dateOptions));
+    }
 }
 
 async function loadContract() {

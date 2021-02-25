@@ -229,8 +229,11 @@ function saveContract() {
         failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
         return;
     }
+    if (!isValidPartner) {
+        $('#partnerName').val('');
+    }
     if (!$('#contractNumberCreate').val() || selectStatus.value === '' || selectType.value === '' || !isValidPartner) {
-        failSnackbar('Bitte befüllen Sie alle Eingabefelder!');
+        failSnackbar('Bitte befüllen Sie alle Eingabefelder mit gültigen Werten!');
         return;
     }
     const postData = {

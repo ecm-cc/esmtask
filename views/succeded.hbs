@@ -13,9 +13,9 @@
                 {{> button title="Service Request schließen" onclick="closeServiceRequest()"}}
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-                <span class="mdc-typography--headline6">
+                <h2 class="mdc-typography--headline6">
                     Aus dem ESM übergebene Felder:
-                </span>
+                </h2>
             </div>
             {{#eq task.metadata.contractType.values.[0] "rentalContract"}}
                     {{> rentalContract task=task.metadata}}

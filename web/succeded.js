@@ -43,7 +43,7 @@ async function loadContract() {
         dataType: 'json',
     });
     const contractNumber = contractResponse.objectProperties.find((prop) => prop.name === 'Vertragsnummer (intern)').value;
-    const contractLink = `<a href="${contractDetailLink}" target="dapi_navigate">${contractNumber}</a>`;
+    const contractLink = `<a href="${contractDetailLink}#details" target="dapi_navigate">${contractNumber}</a>`;
     $('#contract-text').html(`Die Dokumente wurden ${contractLink} vom Typ "${contractResponse.category}" hinzugefügt.`);
 }
 

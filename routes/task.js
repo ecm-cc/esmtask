@@ -66,6 +66,9 @@ module.exports = (assetBasePath) => {
             await util.attachDossier(taskID, dossierID, type, options, config);
             res.status(200).send('OK');
         } catch (err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                console.error(err.response.data.message);
+            }
             console.error(err);
             res.status(400).send(err.response ? err.response.data : err);
         }
@@ -84,6 +87,9 @@ module.exports = (assetBasePath) => {
             await util.attachDossier(taskID, dossierID, type, options, config);
             res.status(200).send('OK');
         } catch (err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                console.error(err.response.data.message);
+            }
             console.error(err);
             res.status(400).send(err.response.data ? err.response.data : err);
         }
@@ -103,6 +109,9 @@ module.exports = (assetBasePath) => {
             }
             res.status(200).send({});
         } catch (err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                console.error(err.response.data.message);
+            }
             console.error(err);
             res.status(400).send(err.response.data ? err.response.data : err);
         }

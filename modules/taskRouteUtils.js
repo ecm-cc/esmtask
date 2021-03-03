@@ -63,15 +63,15 @@ async function getDocumentURL(task, config) {
     return searchHost + searchParams;
 }
 
-async function getIvantiBody(contractID, config, options) {
+async function getIvantiBody(contractID, config, options, type) {
     return {
         link: `${config.host}/dms/r/${config.repositoryId}/o2/${contractID}`,
-        caseID: await getCaseNumber(contractID, config, options),
+        caseID: await getCaseNumber(contractID, config, options, type),
         owner: await getCurrentUserUPN(config, options),
     };
 }
 
-async function getCaseNumber(contractID, config, options) {
+async function getCaseNumber(contractID, config, options, type) {
     let caseNumber = '';
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2/${contractID}`;
@@ -79,7 +79,12 @@ async function getCaseNumber(contractID, config, options) {
     propertyMapping.initDatabase();
     const category = await propertyMapping.getCategory(config.stage, null, null, response.data.category);
     const properties = await propertyMapping.getPropertiesByCategory(config.stage, category.categoryID);
-    const caseNumberProperty = properties.find((prop) => prop.displayname === 'Vertragsnummer (intern)');
+    let caseNumberProperty;
+    if (type === 'contract') {
+        caseNumberProperty = properties.find((prop) => prop.displayname === 'Vertragsnummer (intern)');
+    } else {
+        caseNumberProperty = properties.find((prop) => prop.displayname === 'Vorgangsnummer (intern)');
+    }
     response.data.objectProperties.forEach((prop) => {
         if (prop.id === caseNumberProperty.propertyKey.toString()) {
             caseNumber = prop.value;
@@ -110,7 +115,7 @@ async function attachDossier(taskID, dossierID, type, options, config) {
     const documentURL = await getDocumentURL(task, config);
     await moveDocuments(dossierID, documentURL, options, config, type);
     if (!isDebug(task)) {
-        const ivantiBody = await getIvantiBody(dossierID, config, options);
+        const ivantiBody = await getIvantiBody(dossierID, config, options, type);
         await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
     }
     await setTaskState(task, dossierID, options, config);

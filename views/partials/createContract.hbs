@@ -1,0 +1,38 @@
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-dossier contract">
+    <h2 class="mdc-typography--headline6 task-headline">
+        Vertragsakte erstellen
+    </h2>
+    <div class="mdc-menu-surface--anchor">
+        <div class="mdc-menu mdc-menu-surface" id="partner-options">
+            <ul class="mdc-list" id="partner-list" role="menu" aria-hidden="true" aria-orientation="vertical"
+                tabindex="-1">
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-dossier contract">
+    {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="create-radiobutton"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+    {{> input title="Vertragsnummer (intern)" id="contractNumberCreate" value="Vertragsart wählen" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+    {{> dropdown title="Vertragsstatus" id="contractStatus"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+    {{> dropdown title="Vertragstyp Lieferant" id="contractType"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5 create-dossier contract">
+    {{> input title="Geschäftspartnername" id="partnerName" helper="Bitte mindestens drei Zeichen eingeben"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1 create-dossier contract">
+    <a class="href_list" href="/dbscase/app/partnerConfig/index.html?ct=1" title="Neuen Partner hinzufügen"
+        target="dapi_navigate">
+        <span class="material-icons add-partner-icon">
+            add
+        </span>
+    </a>
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-dossier contract">
+    {{> button title="Speichern" onclick="saveContract()"}}
+</div>

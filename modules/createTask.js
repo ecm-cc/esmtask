@@ -11,10 +11,12 @@ async function buildTaskJSON(postData, userID, config, options) {
     const task = {};
     task.subject = postData.serviceRequestTitle;
     const commentsField = postData.form.find((field) => field.key === 'comments');
-    task.description = commentsField.values[0] || '';
+    const notesField = postData.form.find((field) => field.key === 'notes');
+    task.description = commentsField ? (commentsField.values[0] || '') : (notesField.values[0] || '');
     task.assignees = await getAssignedGroup(postData.contractType, postData.isDebug, config, options);
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
     task.sender = userID;
+    task.retentionTime = 'P365D';
     task.metadata = postData.form;
     task.metadata.push({
         key: 'contractType',

@@ -93,5 +93,6 @@
     "serviceRequestTechnicalID": "283749263",
     "serviceRequestTitle": "Prüfung Mietvertrag",
     "serviceRequestorUPN": "alexander.strutz@able-group.de",
-    "serviceRequestorName": "Alexander Strutz"
+    "serviceRequestorName": "Alexander Strutz",
+    "isDebug": true
 }

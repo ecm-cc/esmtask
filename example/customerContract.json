@@ -1,0 +1,91 @@
+{
+    "form": [
+        {
+            "key": "responsiblePerson",
+            "caption": "Ansprechpartner",
+            "values": [
+                "christopher.kutzner@able-group.de"
+            ]
+        },
+        {
+            "key": "position",
+            "caption": "Position",
+            "values": [
+                "Administrator ECM"
+            ]
+        },
+        {
+            "key": "company",
+            "caption": "Unternehmen",
+            "values": [
+                "ABLE Management Services"
+            ]
+        },
+        {
+            "key": "salesArea",
+            "caption": "Vertriebsgebiet",
+            "values": [
+                "Nordrhein"
+            ]
+        },
+        {
+            "key": "department",
+            "caption": "Niederlassung",
+            "values": [
+                "GL"
+            ]
+        },
+        {
+            "key": "customer",
+            "caption": "Kunde",
+            "values": [
+                "Audi AG"
+            ]
+        },
+        {
+            "key": "contractualRelation",
+            "caption": "Vertragsbeziehung",
+            "values": [
+                "xyz"
+            ]
+        },
+        {
+            "key": "targetBusiness",
+            "caption": "Angestrebtes Geschäft",
+            "values": [
+                "xyz"
+            ]
+        },
+        {
+            "key": "risks",
+            "caption": "Besondere Risiken",
+            "values": [
+                "xyz"
+            ]
+        },
+        {
+            "key": "startOfContract",
+            "caption": "Angestrebter Vertragsbeginn",
+            "values": [
+                "5/15/2021 08:00:00 AM"
+            ]
+        },
+        {
+            "key": "notes",
+            "caption": "Bemerkungen",
+            "values": [
+                "xyz"
+            ]
+        }
+    ],
+    "attachments": [
+        "1F169226092C4CA9AD06E394BDC94D18"
+    ],
+    "contractType": "customerContract",
+    "serviceRequestID": "6767667",
+    "serviceRequestTechnicalID": "6767667",
+    "serviceRequestTitle": "Prüfung Kundenvertrag Version 1",
+    "serviceRequestorUPN": "christopher.dick@able-group.de",
+    "serviceRequestorName": "Christopher Dick",
+    "isDebug": true
+}

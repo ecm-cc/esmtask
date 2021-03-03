@@ -1,0 +1,15 @@
+<label
+    class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--no-label {{#if disabled}}mdc-text-field--disabled{{/if}} property-field">
+    <span class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
+        <span class="mdc-notched-outline__leading"></span>
+        <span class="mdc-notched-outline__notch" style="width: 164px;">
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="startOfContract-label"
+                style="">{{title}}</span>
+        </span>
+        <span class="mdc-notched-outline__trailing"></span>
+    </span>
+    <textarea class="mdc-text-field__input {{#if disabled}}input-disabled{{/if}}" id="{{id}}"
+        value="{{#if value}}{{value}}{{/if}}" rows="4" cols="40"
+        aria-label="{{title}}">{{#if value}}{{value}}{{/if}}</textarea>
+
+</label>

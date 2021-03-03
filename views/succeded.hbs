@@ -18,9 +18,16 @@
                 </h2>
             </div>
             {{#eq task.metadata.contractType.values.[0] "rentalContract"}}
-                    {{> rentalContract task=task.metadata}}
-                {{else}}
-                    {{> supplierContract task=task.metadata}}
+                {{> rentalContract task=task.metadata}}
+            {{/eq}}
+            {{#eq task.metadata.contractType.values.[0] "supplierContract"}}
+                {{> supplierContract task=task.metadata}}
+            {{/eq}}
+            {{#eq task.metadata.contractType.values.[0] "customerContractDefaultDocuments"}}
+                {{> customerContractDefaultDocuments task=task.metadata}}
+            {{/eq}}
+            {{#eq task.metadata.contractType.values.[0] "customerContract"}}
+                {{> customerContract task=task.metadata}}
             {{/eq}}
             {{> dialog question="Wollen Sie den Service Request wirklich schließen?"}}
             {{> snackbar }}

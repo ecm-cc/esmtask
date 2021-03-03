@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 let task;
+let type;
 let metaData;
 let dialog;
 let snackBar;
@@ -9,8 +10,9 @@ window.onload = async () => {
     showOverlay();
     initMDCElements();
     task = $('#data-container').data('task');
+    type = task.metadata.contractType.values[0] === 'supplierContract' || task.metadata.contractType.values[0] === 'rentalContract' ? 'contract' : 'case';
     metaData = $('#data-container').data('id');
-    await loadContract();
+    await loadDossier();
     hideOverlay();
 };
 
@@ -27,24 +29,29 @@ function initMDCElements() {
     $(() => {
         $('.input-disabled').attr('disabled', true);
     });
-    if ($('#desiredRentalStart').val()) {
-        const date = new Date($('#desiredRentalStart').val());
+    if ($('.date-field').val()) {
+        const date = new Date($('.date-field').val());
         const dateOptions = {
             year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin',
         };
-        $('#desiredRentalStart').val(date.toLocaleString('de-DE', dateOptions));
+        $('.date-field').val(date.toLocaleString('de-DE', dateOptions));
     }
 }
 
-async function loadContract() {
-    const contractDetailLink = `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/o2/${task.metadata.linkedContract.values[0]}`;
-    const contractResponse = await $.ajax({
-        url: contractDetailLink,
+async function loadDossier() {
+    const dossierDetailLink = `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/o2/${task.metadata.linkedContract.values[0]}`;
+    const dossierResponse = await $.ajax({
+        url: dossierDetailLink,
         dataType: 'json',
     });
-    const contractNumber = contractResponse.objectProperties.find((prop) => prop.name === 'Vertragsnummer (intern)').value;
-    const contractLink = `<a href="${contractDetailLink}#details" target="dapi_navigate">${contractNumber}</a>`;
-    $('#contract-text').html(`Die Dokumente wurden ${contractLink} vom Typ "${contractResponse.category}" hinzugefügt.`);
+    let internalNumber;
+    if (type === 'contract') {
+        internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vertragsnummer (intern)').value;
+    } else {
+        internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vorgangsnummer (intern)').value;
+    }
+    const dossierLink = `<a href="${dossierDetailLink}#details" target="dapi_navigate">${internalNumber}</a>`;
+    $('#contract-text').html(`Die Dokumente wurden ${dossierLink} vom Typ "${dossierResponse.category}" hinzugefügt.`);
 }
 
 function closeServiceRequest() {

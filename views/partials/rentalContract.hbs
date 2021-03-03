@@ -21,7 +21,7 @@
     {{> input title=task.rentalObjectAddress.caption value=task.rentalObjectAddress.values.[0] id="rentalObjectAddress" disabled=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> input title=task.desiredRentalStart.caption value=task.desiredRentalStart.values.[0] id="desiredRentalStart" disabled=true}}
+    {{> input title=task.desiredRentalStart.caption value=task.desiredRentalStart.values.[0] id="desiredRentalStart" disabled=true date=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.responsiblePerson.caption value=task.responsiblePerson.values.[0] id="responsiblePerson" disabled=true}}
@@ -35,8 +35,6 @@
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.commercialContact.caption value=task.commercialContact.values.[0] id="commercialContact" disabled=true}}
 </div>
-<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> input title=task.comments.caption value=task.comments.values.[0] id="comments" disabled=true}}
-</div>
-<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+    {{> inputTextarea title=task.comments.caption value=task.comments.values.[0] id="comments" disabled=true}}
 </div>

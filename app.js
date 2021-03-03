@@ -13,9 +13,7 @@ const basePath = `/${appName}`;
 const assetBasePath = process.env.ASSET_BASE_PATH || `/${appName}/assets`;
 
 const app = express();
-
-app.set('views', path.join(__dirname, 'views'));
-app.engine('hbs', hbs({
+const handlebars = hbs({
     extname: 'hbs',
     defaultLayout: 'layout',
     layoutsDir: `${__dirname}/views/`,
@@ -29,8 +27,16 @@ app.engine('hbs', hbs({
             };
             return date.toLocaleString('de-DE', dateOptions);
         },
+        isContract(type, options) {
+            if (type === 'rentalContract' || type === 'supplierContract') {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        },
     },
-}));
+});
+app.set('views', path.join(__dirname, 'views'));
+app.engine('hbs', handlebars);
 app.set('view engine', 'hbs');
 
 app.use(tenant);

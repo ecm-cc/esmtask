@@ -1,29 +1,35 @@
 <div class="mdc-select mdc-select--outlined property-field" id="{{id}}">
-<div class="mdc-select__anchor">
-    <span class="mdc-notched-outline">
-        <span class="mdc-notched-outline__leading"></span>
-        <span class="mdc-notched-outline__notch">
-            <span id="outlined-select-label" class="mdc-floating-label">{{title}}</span>
+    <div class="mdc-select__anchor">
+        <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+                <span id="outlined-select-label" class="mdc-floating-label">{{title}}</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
         </span>
-        <span class="mdc-notched-outline__trailing"></span>
-    </span>
-    <span class="mdc-select__selected-text-container">
-        <span class="mdc-select__selected-text"></span>
-    </span>
-    <span class="mdc-select__dropdown-icon">
-        <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
-            <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
-                points="7 10 12 15 17 10">
-            </polygon>
-            <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
-                points="7 15 12 10 17 15">
-            </polygon>
-        </svg>
-    </span>
-</div>
+        <span class="mdc-select__selected-text-container">
+            <span class="mdc-select__selected-text"></span>
+        </span>
+        <span class="mdc-select__dropdown-icon">
+            <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                </polygon>
+                <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                </polygon>
+            </svg>
+        </span>
+    </div>
 
-<div class="mdc-select__menu mdc-menu mdc-menu-surface">
-    <ul class="mdc-list" id="option-list-{{id}}">
-    </ul>
-</div>
+    <div class="mdc-select__menu mdc-menu mdc-menu-surface">
+        <ul class="mdc-list" id="option-list-{{id}}">
+            {{#if value}}
+                <li class="mdc-list-item" data-value="{{value}}">
+                    <span class="mdc-list-item__ripple"></span>
+                    <span class="mdc-list-item__text">{{value}}</span>
+                </li>
+            {{/if}}
+        </ul>
+    </div>
 </div>

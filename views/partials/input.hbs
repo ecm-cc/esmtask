@@ -6,13 +6,13 @@
     </span>
     <span class="mdc-notched-outline__trailing"></span>
   </span>
-  <input type="text" id="{{id}}" class="mdc-text-field__input {{#if disabled}}input-disabled{{/if}}"
+  <input type="text" id="{{id}}" class="mdc-text-field__input {{#if disabled}}input-disabled{{/if}} {{#if date}}date-field{{/if}}"
     aria-labelledby="{{id}}-label" value="{{#if value}}{{value}}{{/if}}">
 </label>
 {{#if helper}}
-<div class="mdc-text-field-helper-line">
-  <div id="username-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
-    {{helper}}
+  <div class="mdc-text-field-helper-line">
+    <div id="username-helper-text" class="mdc-text-field-helper-text" aria-hidden="true">
+      {{helper}}
+    </div>
   </div>
-</div>
 {{/if}}

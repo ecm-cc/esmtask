@@ -2,92 +2,35 @@
    <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-            <h1 class="mdc-typography--headline6">
+            <h1 class="mdc-typography--headline6 task-headline">
                {{task.subject}}
             </h1>
          </div>
          {{#eq task.metadata.contractType.values.[0] "rentalContract"}}
             {{> rentalContract task=task.metadata}}
-            {{else}}
-               {{> supplierContract task=task.metadata}}
          {{/eq}}
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attachments">
-            <span class="mdc-typography--subtitle1">
-               Angehangene Dokumente
-            </span>
-            <ul class="mdc-list mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attachment-list">
-            </ul>
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 button-cell">
-            {{> button title="Neue Akte erstellen" onclick="showCreateContract()"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 button-cell">
-            {{> button title="Mit Akte verknüpfen" onclick="showAlternateContract()"}}
-         </div>
-
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
-            <h2 class="mdc-typography--headline6">
-               Vertragsakte erstellen
-            </h2>
-            <div class="mdc-menu-surface--anchor">
-               <div class="mdc-menu mdc-menu-surface" id="partner-options">
-                  <ul class="mdc-list" id="partner-list" role="menu" aria-hidden="true" aria-orientation="vertical"
-                     tabindex="-1">
-                  </ul>
-               </div>
-            </div>
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
-            {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="create-radiobutton"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> input title="Vertragsnummer (intern)" id="contractNumberCreate"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> dropdown title="Vertragsstatus" id="contractStatus"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-contract">
-            {{> dropdown title="Vertragstyp Lieferant" id="contractType"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5 create-contract">
-            {{> input title="Geschäftspartnername" id="partnerName" helper="Bitte mindestens drei Zeichen eingeben"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1 create-contract">
-            <a class="href_list" href="/dbscase/app/partnerConfig/index.html?ct=1" title="Neuen Partner hinzufügen" target="dapi_navigate">
-               <span class="material-icons">
-                  add
-               </span>
-            </a>
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-contract">
-            {{> button title="Speichern" onclick="saveContract()"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 alternate-contract">
-            <h2 class="mdc-typography--headline6">
-               Mit Vertrag verknüpfen
-            </h2>
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 alternate-contract">
-            {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="alternate-radiobutton"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 alternate-contract">
-            {{> input title="Vertragsnummer (intern)" id="contractNumberSearch"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 alternate-contract">
-            {{> input title="Vertragsbezeichnung" id="contractDesignation"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 alternate-contract button-search">
-            {{> button title="Suchen" onclick="searchContract()" additionalclass="button-center"}}
-         </div>
-         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 search-result">
-            <ul class="mdc-list mdc-list--two-line" id="result-list">
-            </ul>
-         </div>
+         {{#eq task.metadata.contractType.values.[0] "supplierContract"}}
+            {{> supplierContract task=task.metadata}}
+         {{/eq}}
+         {{#eq task.metadata.contractType.values.[0] "customerContractDefaultDocuments"}}
+            {{> customerContractDefaultDocuments task=task.metadata}}
+         {{/eq}}
+         {{#eq task.metadata.contractType.values.[0] "customerContract"}}
+            {{> customerContract task=task.metadata}}
+         {{/eq}}
+         {{> attachments}}
+         {{#isContract task.metadata.contractType.values.[0]}}
+            {{> createContract}}
+            {{> attachContract}}
+            {{else}}
+               {{> createCase}}
+               {{> attachCase}}
+         {{/isContract}}
       </div>
    </div>
    {{> snackbar }}
    {{> dialog question="Wollen Sie die ausgewählten Dokumente verknüpfen?" id="attach-dialog"}}
-   {{> dialog question="Wollen Sie diese Vertragsakte erstellen?" id="create-dialog"}}
+   {{> dialog question="Wollen Sie diese Akte erstellen?" id="create-dialog"}}
    <span id="data-container" data-id="{{metaData}}" data-task="{{taskString}}"></span>
 </body>
 

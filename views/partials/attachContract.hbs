@@ -1,0 +1,21 @@
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attach-dossier contract">
+    <h2 class="mdc-typography--headline6 task-headline">
+        Mit Vertrag verknüpfen
+    </h2>
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attach-dossier contract">
+    {{> radiobutton option1="Einzelvertrag" option2="Rahmenvertrag" id="alternate-radiobutton"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 attach-dossier contract">
+    {{> input title="Vertragsnummer (intern)" id="contractNumberSearch"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 attach-dossier contract">
+    {{> input title="Vertragsbezeichnung" id="contractDesignation"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 attach-dossier contract button-search">
+    {{> button title="Suchen" onclick="searchContract()" additionalclass="button-center"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 search-result-contract">
+    <ul class="mdc-list mdc-list--two-line" id="result-list-contract">
+    </ul>
+</div>

@@ -4,7 +4,7 @@ const propertyMapping = require('@ablegroup/propertymapping');
 let options;
 let config;
 
-module.exports = async (contract, documentURL, givenOptions, localConfig) => {
+module.exports = async (dossierID, documentURL, givenOptions, localConfig, type) => {
     config = localConfig;
     options = givenOptions;
     const httpOptions = JSON.parse(JSON.stringify(options));
@@ -12,16 +12,16 @@ module.exports = async (contract, documentURL, givenOptions, localConfig) => {
     const response = await axios(httpOptions);
     const promises = [];
     response.data.items.forEach((document) => {
-        promises.push(moveDocument(document, contract, options, config));
+        promises.push(moveDocument(document, dossierID, type, options, config));
     });
     await Promise.all(promises);
 };
 
-async function moveDocument(document, contract) {
+async function moveDocument(document, dossierID, type) {
     const documentBuffer = await downloadDocument(document, options, config);
     const documentUri = await uploadDocument(documentBuffer, config, options);
     const documentMeta = await getDocumentMeta(document.id);
-    await createDocument(documentMeta, contract, documentUri, config, options);
+    await createDocument(documentMeta, dossierID, documentUri, type, config, options);
     try {
         await deleteDocument(documentMeta, config, options);
     } catch (err) {
@@ -55,13 +55,20 @@ async function getDocumentMeta(documentID) {
     return response.data;
 }
 
-async function createDocument(documentMeta, contract, contentLocationUri) {
+async function createDocument(documentMeta, dossierID, contentLocationUri, type) {
     const filename = documentMeta.systemProperties.find((prop) => prop.id === 'property_filename').value;
     propertyMapping.initDatabase();
-    const contractCategoryName = await getContractCategory(contract, config, options);
-    const contractDocumentCategories = await propertyMapping.getCategoryByParent(config.stage, null, null, contractCategoryName);
-    const contractDocumentCategory = contractDocumentCategories.find((category) => category.displayname.includes('unterlage')); // Needed, but not good
-    const contractDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, contractDocumentCategory.categoryID);
+    const dossierCategoryName = await getDossierCategory(dossierID, config, options);
+    const dossierDocumentCategories = await propertyMapping.getCategoryByParent(config.stage, null, null, dossierCategoryName);
+    let dossierDocumentCategory;
+    let dossierDocumentProperties;
+    if (type === 'contract') {
+        dossierDocumentCategory = dossierDocumentCategories.find((category) => category.displayname.includes('unterlage')); // Needed, but not good
+        dossierDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, dossierDocumentCategory.categoryID);
+    } else {
+        dossierDocumentCategory = dossierDocumentCategories.find((category) => category.displayname.includes('dokument')); // Needed, but not good
+        dossierDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, dossierDocumentCategory.categoryID);
+    }
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.method = 'post';
     httpOptions.headers['Content-Type'] = 'application/hal+json';
@@ -70,35 +77,60 @@ async function createDocument(documentMeta, contract, contentLocationUri) {
         filename,
         sourceId: `/dms/r/${config.repositoryId}/source`,
         contentLocationUri,
-        parentId: contract,
+        parentId: dossierID,
         sourceProperties: {
-            properties: [
-                {
-                    // TODO: Change for Kundenrahmenvertrag
-                    key: contractDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,
-                    values: ['Anlage'],
-                },
-                {
-                    key: contractDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
-                    values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID').value],
-                },
-                {
-                    key: contractDocumentProperties.find((property) => property.displayname === 'ESM techn. ID').propertyKey,
-                    values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM techn. ID').value],
-                },
-                {
-                    key: contractDocumentProperties.find((property) => property.displayname === 'ESM Status').propertyKey,
-                    values: ['Offen'],
-                },
-            ],
+            properties: type === 'contract' ? getContractSourceProperties(dossierDocumentProperties, documentMeta)
+                : getCaseSourceProperties(dossierDocumentProperties, documentMeta),
         },
     };
     await axios(httpOptions);
 }
 
-async function getContractCategory(contract) {
+function getContractSourceProperties(dossierDocumentProperties, documentMeta) {
+    return [
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,
+            values: ['Anlage'],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
+            values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID').value],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'ESM techn. ID').propertyKey,
+            values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM techn. ID').value],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'ESM Status').propertyKey,
+            values: ['Offen'],
+        },
+    ];
+}
+
+function getCaseSourceProperties(dossierDocumentProperties, documentMeta) {
+    return [
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vorgangsunterlage').propertyKey,
+            values: ['Vertragsanlage'],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
+            values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID').value],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'ESM techn. ID').propertyKey,
+            values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM techn. ID').value],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'ESM Status').propertyKey,
+            values: ['Offen'],
+        },
+    ];
+}
+
+async function getDossierCategory(dossier) {
     const httpOptions = JSON.parse(JSON.stringify(options));
-    httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2/${contract}`;
+    httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2/${dossier}`;
     const response = await axios(httpOptions);
     return response.data.category;
 }

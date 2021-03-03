@@ -1,0 +1,112 @@
+{
+    "form": [
+        {
+            "key": "isIndividualAgreement",
+            "caption": "Handelt es sich um einen AÜ-Einzelvertrag?",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "isMasterAgreement",
+            "caption": "Gibt es einen Rahmenvertrag?",
+            "values": [
+                false
+            ]
+        },
+        {
+            "key": "masterAgreementDate",
+            "caption": "Datum Rahmenvertrag",
+            "values": [
+                "5/15/2021 08:00:00 AM"
+            ]
+        },
+        {
+            "key": "responsiblePerson",
+            "caption": "Ansprechpartner",
+            "values": [
+                "christopher.kutzner@able-group.de"
+            ]
+        },
+        {
+            "key": "position",
+            "caption": "Position",
+            "values": [
+                "Administrator ECM"
+            ]
+        },
+        {
+            "key": "company",
+            "caption": "Unternehmen",
+            "values": [
+                "ABLE Management Services"
+            ]
+        },
+        {
+            "key": "salesArea",
+            "caption": "Vertriebsgebiet",
+            "values": [
+                "Nordrhein"
+            ]
+        },
+        {
+            "key": "department",
+            "caption": "Niederlassung",
+            "values": [
+                "GL"
+            ]
+        },
+        {
+            "key": "customer",
+            "caption": "Kunde",
+            "values": [
+                "Audi AG"
+            ]
+        },
+        {
+            "key": "contract",
+            "caption": "Kontraktnummer SAP",
+            "values": [
+                "56984146"
+            ]
+        },
+        {
+            "key": "customizing",
+            "caption": "Anpassungsbedarf",
+            "values": [
+                "fosaidnfosanfdosundfisanfd"
+            ]
+        },
+        {
+            "key": "hasChanges",
+            "caption": "Wurde das Standarddokument bereits geändert?",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "changes",
+            "caption": "Änderungen",
+            "values": [
+                "fosaidnfosanfdosundfisanfd"
+            ]
+        },
+        {
+            "key": "notes",
+            "caption": "Bemerkungen",
+            "values": [
+                "xyz"
+            ]
+        }
+    ],
+    "attachments": [
+        "5F27DC4B44E045C18B1CBD5AFB5A4B8D"
+    ],
+    "contractType": "customerContractDefaultDocuments",
+    "serviceRequestID": "6767667",
+    "serviceRequestTechnicalID": "6767667",
+    "serviceRequestTitle": "Prüfung Mietvertrag Version 4",
+    "serviceRequestorUPN": "christopher.dick@able-group.de",
+    "serviceRequestorName": "Christopher Dick",
+    "isDebug": true
+}

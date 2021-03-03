@@ -1,0 +1,51 @@
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isIndividualAgreement.caption value=task.isIndividualAgreement.values.[0] id="isIndividualAgreement"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isMasterAgreement.caption value=task.isMasterAgreement.values.[0] id="isMasterAgreement"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.hasChanges.caption value=task.hasChanges.values.[0] id="hasChanges"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.masterAgreementDate.caption value=task.masterAgreementDate.values.[0] id="masterAgreementDate" disabled=true date=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.responsiblePerson.caption value=task.responsiblePerson.values.[0] id="responsiblePerson" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.position.caption value=task.position.values.[0] id="position" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.company.caption value=task.company.values.[0] id="company" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.salesArea.caption value=task.salesArea.values.[0] id="salesArea" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.department.caption value=task.department.values.[0] id="department" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.customer.caption value=task.customer.values.[0] id="customer" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.contract.caption value=task.contract.values.[0] id="contract" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.employee.caption value=task.employee.values.[0] id="employee" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+    {{> inputTextarea title=task.customizing.caption value=task.customizing.values.[0] id="customizing" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+    {{> inputTextarea title=task.changes.caption value=task.changes.values.[0] id="changes" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+    {{> inputTextarea title=task.notes.caption value=task.notes.values.[0] id="notes" disabled=true}}
+</div>

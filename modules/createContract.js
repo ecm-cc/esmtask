@@ -5,6 +5,7 @@ module.exports = async (postData, options, config) => {
     propertyMapping.initDatabase();
     const contractCategory = await propertyMapping.getCategory(config.stage, null, postData.categoryKey);
     const contractProperties = await propertyMapping.getPropertiesByCategory(config.stage, contractCategory.categoryID);
+    await validateContract(postData, options, config, contractCategory, contractProperties);
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.method = 'post';
     httpOptions.headers['Content-Type'] = 'application/hal+json';
@@ -15,7 +16,6 @@ module.exports = async (postData, options, config) => {
         sourceProperties: {
             properties: [
                 {
-                    // TODO: Change for Kundenrahmenvertrag
                     key: contractProperties.find((property) => property.displayname === 'Vertragsnummer (intern)').propertyKey,
                     values: [postData.contractNumber],
                 },
@@ -38,3 +38,30 @@ module.exports = async (postData, options, config) => {
     const uri = response.headers.location.split('?')[0];
     return uri.split('/')[5];
 };
+
+async function validateContract(postData, options, config, contractCategory, contractProperties) {
+    const httpOptions = JSON.parse(JSON.stringify(options));
+    httpOptions.method = 'post';
+    httpOptions.headers['Content-Type'] = 'application/hal+json';
+    httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/storevalidate`;
+    httpOptions.data = {
+        type: 2,
+        objectDefinitionId: contractCategory.categoryKey,
+        systemProperties: {},
+        remarks: {},
+        multivalueExtendedProperties: {
+            [contractProperties.find((property) => property.displayname === 'Geschäftspartnername').propertyKey]: { 1: postData.partnerName },
+        },
+        extendedProperties: {
+            [contractProperties.find((property) => property.displayname === 'Vertragsnummer (intern)').propertyKey]: postData.contractNumber,
+            [contractProperties.find((property) => property.displayname === 'Vertragsstatus').propertyKey]: postData.contractStatus,
+            [contractProperties.find((property) => property.displayname === 'Geschäftspartnername').propertyKey]: postData.partnerName,
+            [contractProperties.find((property) => property.displayname === 'Vertragstyp Lieferant').propertyKey]: postData.contractType,
+        },
+        dossierId: null,
+        storeObject: {
+            masterFileName: null, filename: null, parentId: null, dmsObjectId: null, displayValue: null,
+        },
+    };
+    await axios(httpOptions);
+}

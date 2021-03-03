@@ -44,19 +44,31 @@ body {
     padding: 0;
 }
 
-.material-icons {
+.add-partner-icon {
     font-size: 48px;
+}
+
+.task-headline {
+    margin-bottom: 0;
 }
 
 .attachments {
     display: none;
 }
 
-.create-contract {
+.create-dossier.contract {
     display: none;
 }
 
-.alternate-contract {
+.create-dossier.case {
+    display: none;
+}
+
+.attach-dossier.contract {
+    display: none;
+}
+
+.attach-dossier.case {
     display: none;
 }
 
@@ -70,7 +82,7 @@ body {
 
 .icon-right {
     position: absolute;
-    right: 50%;
+    right: 30%;
     font-size: 32px;
 }
 

@@ -14,6 +14,18 @@ function getLocalConfig(tenant) {
         groupName: {
             rentalContract: 'BA_ECM_CS_IMMO',
             supplierContract: 'BA_ECM_CS_EINKAUF',
+            customerContract: 'BA_LEGAL_DEPARTMENT',
+            customerContractDefaultDocuments: 'BA_LEGAL_DEPARTMENT',
+        },
+        internalNumberPrefix: {
+            XLEV: 'LEV',
+            XLRV: 'LRV',
+            XCASE: 'VG',
+        },
+        internalNumberRegEx: {
+            XLEV: `LEV-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
+            XLRV: `LRV-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
+            XCASE: `VG-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
         },
     };
     // QAS

@@ -1,0 +1,18 @@
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attach-dossier case">
+    <h2 class="mdc-typography--headline6 task-headline">
+        Mit Vorgang verknüpfen
+    </h2>
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 attach-dossier case">
+    {{> input title="Vorgangsnummer (intern)" id="caseNumberSearch"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 attach-dossier case">
+    {{> input title="Vorgangsbezeichnung" id="caseDesignation"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 attach-dossier case button-search">
+    {{> button title="Suchen" onclick="searchCase()" additionalclass="button-center"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 search-result-case">
+    <ul class="mdc-list mdc-list--two-line" id="result-list-case">
+    </ul>
+</div>

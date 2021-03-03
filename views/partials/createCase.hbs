@@ -1,0 +1,20 @@
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-dossier case">
+    <h2 class="mdc-typography--headline6 task-headline">
+        Vorgangsakte erstellen
+    </h2>
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier case">
+    {{> input title="Vorgangsnummer (intern)" id="caseNumberCreate" value="wird geladen.." disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier case">
+    {{> dropdown title="Vertragstyp" id="caseContractType"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier case">
+    {{> dropdown title="Vorgangstyp" id="caseType" value="VP-Vertragsprüfung" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier case">
+    {{> dropdown title="Organisationseinheit" id="organisationunit"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-dossier case">
+    {{> button title="Speichern" onclick="saveCase()"}}
+</div>

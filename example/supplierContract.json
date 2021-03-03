@@ -81,5 +81,6 @@
     "serviceRequestTechnicalID": "283749263",
     "serviceRequestTitle": "Prüfung Lieferantenvertrag",
     "serviceRequestorUPN": "alexander.strutz@able-group.de",
-    "serviceRequestorName": "Alexander Strutz"
+    "serviceRequestorName": "Alexander Strutz",
+    "isDebug": true
 }

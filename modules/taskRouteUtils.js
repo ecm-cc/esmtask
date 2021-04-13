@@ -6,6 +6,7 @@ const createContract = require('./createContract');
 const createCase = require('./createCase');
 const loadTask = require('./loadTask');
 const updateServiceRequest = require('./updateServiceRequest');
+const setESMLink = require('./setESMLink');
 
 function isDebug(task) {
     return task.metadata.isDebug && task.metadata.isDebug.values[0] && (task.metadata.isDebug.values[0] === 'true' || task.metadata.isDebug.values[0] === true);
@@ -29,11 +30,15 @@ async function getMetaData(task, assetBasePath, config) {
     const caseType = caseProperties.find((property) => property.displayname === 'Vorgangstyp').propertyKey;
     const caseContractType = caseProperties.find((property) => property.displayname === 'Vertragstyp').propertyKey;
     const organisationUnit = caseProperties.find((property) => property.displayname === 'Organisationseinheit').propertyKey;
+    const caseDocumentCategory = await propertyMapping.getCategory(config.stage, null, null, 'Legal - Vorgangsdokumente');
+    const caseDocumentCategoryProperties = await propertyMapping.getPropertiesByCategory(config.stage, caseDocumentCategory.categoryID);
+    const caseContractDocumentType = caseDocumentCategoryProperties.find((property) => property.displayname === 'Typ Vorgangsunterlage').propertyKey;
     return {
         keys: {
             generalContractCategory: generalContractCategory.categoryKey,
             singleContractCategory: singleContractCategory.categoryKey,
             caseCategory: caseCategory.categoryKey,
+            caseDocumentCategory: caseDocumentCategory.categoryKey,
             contractNumberInternal,
             contractDesignation,
             contractStatus,
@@ -45,6 +50,7 @@ async function getMetaData(task, assetBasePath, config) {
             caseType,
             caseContractType,
             organisationUnit,
+            caseContractDocumentType,
         },
         documentURL: await getDocumentURL(task, config),
         assetBasePath,
@@ -110,13 +116,16 @@ async function createDossier(postData, options, config, type) {
     return dossierID;
 }
 
-async function attachDossier(taskID, dossierID, type, options, config) {
+async function attachDossier(taskID, dossierID, type, documentProperties, esmLink, options, config) {
     const task = await loadTask(taskID, options, config);
     const documentURL = await getDocumentURL(task, config);
-    await moveDocuments(dossierID, documentURL, options, config, type);
+    await moveDocuments(dossierID, documentURL, documentProperties, options, config, type);
     if (!isDebug(task)) {
         const ivantiBody = await getIvantiBody(dossierID, config, options, type);
         await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
+    }
+    if (type === 'case') {
+        await setESMLink(dossierID, esmLink, options, config);
     }
     await setTaskState(task, dossierID, options, config);
 }

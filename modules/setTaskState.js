@@ -1,9 +1,13 @@
 const axios = require('axios');
+const login = require('@ablegroup/login');
 
 module.exports = async (task, contractID, options, config) => {
     const localTask = JSON.parse(JSON.stringify(task));
     const taskURL = `/task/tasks/${task.id}`;
     const httpOptions = JSON.parse(JSON.stringify(options));
+    const authSessionId = await login(config.host, config.serviceUserAPIKey);
+    httpOptions.headers.Authorization = `Bearer ${authSessionId}`;
+    delete httpOptions.headers.Cookie;
     httpOptions.url = `${config.host}${taskURL}`;
     httpOptions.method = 'patch';
     localTask.metadata.linkedContract.values[0] = contractID;

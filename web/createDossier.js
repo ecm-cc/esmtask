@@ -26,6 +26,7 @@ async function loadAsyncData() {
         selectCaseType.value = 'VP-Vertragsprüfung';
         selectCaseContractType = new mdc.select.MDCSelect(document.querySelector('#caseContractType'));
         selectCaseOrganisationunit = new mdc.select.MDCSelect(document.querySelector('#organisationunit'));
+        selectCaseOrganisationunit.value = getOrganisationUnit();
     }
 }
 
@@ -41,10 +42,10 @@ async function generateInternalNumbers() {
             }
         }
         $('.option-1').on('click', () => {
-            $('#contractNumberCreate').val(generalContractInternalNumber);
+            $('#contractNumberCreate').val(singleContractInternalNumber);
         });
         $('.option-2').on('click', () => {
-            $('#contractNumberCreate').val(singleContractInternalNumber);
+            $('#contractNumberCreate').val(generalContractInternalNumber);
         });
     } else {
         const caseInternalNumber = await loadNextInternalNumber(metaData.keys.caseCategory);
@@ -92,7 +93,7 @@ async function loadNextInternalNumber(categoryKey) {
     return latestInternalNumber;
 }
 
-async function loadDropdown(key, listID, searchString) {
+async function loadDropdown(key, listID, searchString, isAttachment) {
     const dropdownValues = await $.ajax({
         method: 'POST',
         url: `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/validvalues/p/${key}?rownumber=1`,
@@ -100,7 +101,7 @@ async function loadDropdown(key, listID, searchString) {
             Accept: 'application/hal+json',
             'Content-Type': 'application/hal+json',
         },
-        data: getDMSBody(searchString),
+        data: getDMSBody(searchString, isAttachment),
     });
     if (listID) {
         dropdownValues.values.forEach((dropdownType) => {
@@ -115,9 +116,23 @@ async function loadDropdown(key, listID, searchString) {
     return dropdownValues;
 }
 
-function getDMSBody(searchString) {
+function getOrganisationUnit() {
+    const department = task.metadata.department.values[0];
+    const orgUnit = selectCaseOrganisationunit.menuItemValues.find((item) => item.includes(department));
+    return orgUnit || '';
+}
+
+function getDMSBody(searchString, isAttachment) {
     const extendedProperties = {};
     const multivalueExtendedProperties = {};
+    let objectDefinitionId;
+    if (type === 'contract') {
+        objectDefinitionId = metaData.keys.generalContractCategory;
+    } else if (isAttachment) {
+        objectDefinitionId = metaData.keys.caseDocumentCategory;
+    } else {
+        objectDefinitionId = metaData.keys.caseCategory;
+    }
     if (searchString) {
         extendedProperties[metaData.keys.partnerName] = searchString;
         multivalueExtendedProperties[metaData.keys.partnerName] = { 1: searchString };
@@ -126,7 +141,7 @@ function getDMSBody(searchString) {
         dossierId: null,
         extendedProperties,
         multivalueExtendedProperties,
-        objectDefinitionId: type === 'contract' ? metaData.keys.generalContractCategory : metaData.keys.caseCategory,
+        objectDefinitionId,
         remarks: {},
         storeObject: {
             masterFileName: null, filename: null, parentId: null, dmsObjectId: null, displayValue: null,
@@ -198,6 +213,8 @@ function saveCase() {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder mit gültigen Werten!');
         return;
     }
+    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType`;
+    const esmLink = `${esmBaseLink}=ServiceReq#CommandData=RecId,=,0,${task.metadata.serviceRequestTechnicalID.values[0]},string,AND|#1615981839639`;
     const postData = {
         type: 'case',
         caseNumber: $('#caseNumberCreate').val(),
@@ -205,8 +222,22 @@ function saveCase() {
         caseType: selectCaseType.value,
         caseOrganisationunit: selectCaseOrganisationunit.value,
         categoryKey: metaData.keys.caseCategory,
+        esmLink,
+        orgunitContact: task.metadata.responsiblePerson.values[0],
+        documentProperties: JSON.stringify(collectdocumentProperties()),
     };
     sendDossier(postData);
+}
+
+function collectdocumentProperties() {
+    const documentProperties = {};
+    documents.items.forEach((doc) => {
+        documentProperties[doc.id] = {
+            subject: $(`#subject-${doc.id}`).val(),
+            type: $(`#type-${doc.id} .mdc-list .mdc-list-item--selected`).data('value'),
+        };
+    });
+    return documentProperties;
 }
 
 function sendDossier(postData) {

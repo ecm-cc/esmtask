@@ -1,5 +1,5 @@
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> input title=task.responsiblePerson.caption value=task.responsiblePerson.values.[0] id="responsiblePerson" disabled=true}}
+    {{> inputMailto title=task.responsiblePerson.caption value=task.responsiblePerson.values.[0] id="responsiblePerson" disabled=true subject=subject}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.position.caption value=task.position.values.[0] id="position" disabled=true}}

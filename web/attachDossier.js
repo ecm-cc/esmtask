@@ -89,7 +89,24 @@ function renderResults(results) {
     $('.search-result-contract').show();
 }
 
+function collectdocumentProperties() {
+    const documentProperties = {};
+    documents.items.forEach((doc) => {
+        documentProperties[doc.id] = {
+            subject: $(`#subject-${doc.id}`).val(),
+            type: $(`#type-${doc.id} .mdc-list .mdc-list-item--selected`).data('value'),
+        };
+    });
+    return documentProperties;
+}
+
 function attachDossier(dossierID) {
+    const postData = {};
+    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType`;
+    postData.esmLink = `${esmBaseLink}=ServiceReq#CommandData=RecId,=,0,${task.metadata.serviceRequestTechnicalID.values[0]},string,AND|#1615981839639`;
+    if (type === 'case') {
+        postData.documentProperties = JSON.stringify(collectdocumentProperties());
+    }
     attachDialog.open();
     attachDialog.listen('MDCDialog:closed', (reason) => {
         if (reason.detail.action === 'ok') {
@@ -98,6 +115,7 @@ function attachDossier(dossierID) {
                 timeout: 90000,
                 method: 'PUT',
                 url: `/able-esmtask/task?dossierID=${dossierID}&taskID=${task.id}&type=${type}`,
+                data: postData,
             }).done(() => {
                 hideOverlay();
                 successSnackbar('Die Verknüpfung wurde erstellt, Seite wird neu geladen..');

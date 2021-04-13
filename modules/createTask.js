@@ -17,21 +17,25 @@ async function buildTaskJSON(postData, userID, config, options) {
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
     task.sender = userID;
     task.retentionTime = 'P365D';
-    task.metadata = postData.form;
+    task.metadata = postData.form.map((form) => ({
+        key: form.key,
+        caption: form.caption,
+        values: form.values[0] ? form.values : [''],
+    }));
     task.metadata.push({
         key: 'contractType',
         caption: 'Vertragsart',
-        values: [postData.contractType],
+        values: [postData.contractType || ''],
     });
     task.metadata.push({
         key: 'serviceRequestTechnicalID',
         caption: 'Techn. Service Request ID',
-        values: [postData.serviceRequestTechnicalID],
+        values: [postData.serviceRequestTechnicalID || ''],
     });
     task.metadata.push({
         key: 'serviceRequestID',
         caption: 'Service Request ID',
-        values: [postData.serviceRequestID],
+        values: [postData.serviceRequestID || ''],
     });
     task.metadata.push({
         key: 'linkedContract',
@@ -55,7 +59,7 @@ async function getUserID(userUPN, config, options) {
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/identityprovider/scim/users`;
     const userSCIM = await axios(httpOptions);
-    const userID = userSCIM.data.resources.find((user) => user.userName === userUPN).id;
+    const userID = userSCIM.data.resources.find((user) => user.userName.toLowerCase() === userUPN.toLowerCase()).id;
     return userID;
 }
 
@@ -84,7 +88,7 @@ async function changeTaskID(taskURL, config, options) {
 
 async function getAssignedGroup(contractType, isDebug, config, options) {
     if (isDebug) {
-        return ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F'];
+        return config.debugAssignees;
     }
     const groupName = config.groupName[contractType];
     const httpOptions = JSON.parse(JSON.stringify(options));

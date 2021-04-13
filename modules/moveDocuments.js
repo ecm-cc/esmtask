@@ -1,10 +1,11 @@
 const axios = require('axios');
+const login = require('@ablegroup/login');
 const propertyMapping = require('@ablegroup/propertymapping');
 
 let options;
 let config;
 
-module.exports = async (dossierID, documentURL, givenOptions, localConfig, type) => {
+module.exports = async (dossierID, documentURL, documentProperties, givenOptions, localConfig, type) => {
     config = localConfig;
     options = givenOptions;
     const httpOptions = JSON.parse(JSON.stringify(options));
@@ -12,18 +13,22 @@ module.exports = async (dossierID, documentURL, givenOptions, localConfig, type)
     const response = await axios(httpOptions);
     const promises = [];
     response.data.items.forEach((document) => {
-        promises.push(moveDocument(document, dossierID, type, options, config));
+        if (documentProperties && documentProperties[document.id]) {
+            promises.push(moveDocument(document, dossierID, type, documentProperties[document.id]));
+        } else {
+            promises.push(moveDocument(document, dossierID, type));
+        }
     });
     await Promise.all(promises);
 };
 
-async function moveDocument(document, dossierID, type) {
-    const documentBuffer = await downloadDocument(document, options, config);
-    const documentUri = await uploadDocument(documentBuffer, config, options);
+async function moveDocument(document, dossierID, type, documentProperties) {
+    const documentBuffer = await downloadDocument(document);
+    const documentUri = await uploadDocument(documentBuffer);
     const documentMeta = await getDocumentMeta(document.id);
-    await createDocument(documentMeta, dossierID, documentUri, type, config, options);
+    await createDocument(documentMeta, dossierID, documentUri, type, documentProperties);
     try {
-        await deleteDocument(documentMeta, config, options);
+        await deleteDocument(documentMeta);
     } catch (err) {
         console.error(err);
     }
@@ -55,7 +60,7 @@ async function getDocumentMeta(documentID) {
     return response.data;
 }
 
-async function createDocument(documentMeta, dossierID, contentLocationUri, type) {
+async function createDocument(documentMeta, dossierID, contentLocationUri, type, documentProperties) {
     const filename = documentMeta.systemProperties.find((prop) => prop.id === 'property_filename').value;
     propertyMapping.initDatabase();
     const dossierCategoryName = await getDossierCategory(dossierID, config, options);
@@ -80,7 +85,7 @@ async function createDocument(documentMeta, dossierID, contentLocationUri, type)
         parentId: dossierID,
         sourceProperties: {
             properties: type === 'contract' ? getContractSourceProperties(dossierDocumentProperties, documentMeta)
-                : getCaseSourceProperties(dossierDocumentProperties, documentMeta),
+                : getCaseSourceProperties(dossierDocumentProperties, documentMeta, documentProperties),
         },
     };
     await axios(httpOptions);
@@ -90,7 +95,7 @@ function getContractSourceProperties(dossierDocumentProperties, documentMeta) {
     return [
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,
-            values: ['Anlage'],
+            values: ['Vertragsanlage'],
         },
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
@@ -107,11 +112,15 @@ function getContractSourceProperties(dossierDocumentProperties, documentMeta) {
     ];
 }
 
-function getCaseSourceProperties(dossierDocumentProperties, documentMeta) {
+function getCaseSourceProperties(dossierDocumentProperties, documentMeta, documentProperties) {
     return [
         {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'Betreff').propertyKey,
+            values: documentProperties ? [documentProperties.subject] : [''],
+        },
+        {
             key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vorgangsunterlage').propertyKey,
-            values: ['Vertragsanlage'],
+            values: documentProperties ? [documentProperties.type] : ['zu definieren'],
         },
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
@@ -137,6 +146,9 @@ async function getDossierCategory(dossier) {
 
 async function deleteDocument(documentMeta) {
     const httpOptions = JSON.parse(JSON.stringify(options));
+    const authSessionId = await login(config.host, config.serviceUserAPIKey);
+    httpOptions.headers.Authorization = `Bearer ${authSessionId}`;
+    delete httpOptions.headers.Cookie;
     httpOptions.method = 'delete';
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2/${documentMeta.id}`;
     httpOptions.data = { reason: 'ESM-Document moved.' };

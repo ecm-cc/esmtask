@@ -87,13 +87,25 @@ body {
 }
 
 .href_list {
+    text-decoration: none
     color: black;
-    text-decoration: none;
- }
+}
 
- #partner-options {
-     width: 50% !important;
- }
+.center-align {
+    align-items: center;
+}
+
+.mailto_input {
+    width: 100% !important;
+}
+
+#partner-options {
+    width: 50% !important;
+}
+
+.attachment-element label {
+    width: 100%;
+}
 
 /* Icon colors for file types */
 

@@ -11,10 +11,10 @@ locals {
   # If you add stages use keys which result in the stage appended at the end of the list!
   # If you are uncertain use terraform plan to check the changes terraform would make.
   stages = {
-    "a_prod" = "1"
+    "a_prod" = "296"
     "b_dev"  = "$LATEST"
-    "c_qas" = "1"
-    "d_version" = "1"
+    "c_qas" = "296"
+    "d_version" = "296"
   }
 
   // to avoid unnecessary lambda function deployments the build version env var is only changed if the lambda function code has been changed
@@ -41,8 +41,13 @@ module "serverless_lambda_app" {
   lambda_environment_vars = {
     SIGNATURE_SECRET = "${var.signature_secret}"
     BUILD_VERSION    = "${local.build_version}"
-    IVANTI_API_KEY_STG = "C30D2357566F4B01B86696A8397AA0D6"
+    IVANTI_API_KEY_STG = "0FF464CC574E4C3D9E53B1D115D2D313"
+    IVANTI_API_KEY_UAT = "98328916143C45DE8C67854F861969C2"
     IVANTI_API_KEY_PROD = "99DCF698F0544FAEBAD9FDC2BA662A5D"
+    SERVICE_USER_API_KEY_DEV = "vEbIrqpkDKoCNES6Ve0T0/3cyabvOKbg1dZipWq9K3R2YjN2B/AGKTahr3mpEz4+wjusUtBktdsO1+2a+vdaiqqS76lxsYWXf6L8jjuh8lo=&_z_A0V5ayCTa9cPOsDYS9UMIGTy6NNkrhMpS4JrFW1uq7mZ_FUosVwx20sFnjIjHbnIXBPGGyaknHQU3U_vqmmR7zljWy7YJ"
+    SERVICE_USER_API_KEY_QAS = "iJ0f/K5izO5p5i8uAyv1HmcSNc28hC+h4Q/aHdn+UlvBA6VmuNoJQwLMWoa4orqMKNRird6tDVIT5MJRafa5Jowc4wYVTGNHmZWQkTkLGic=&_z_A0V5ayCRqAycW_TlbIkUI0V1YaviZHucJyp8i4TGlZlaMDLmhpT1r6IFphGuFuvxRsHnmxibpzlAP8P78EolxtW-fA8B9"
+    SERVICE_USER_API_KEY_VERSION = "zZUZkjoQIXzkD9RPGSnVK6F0lYzrxjKr+fsavchB+IIISZDqQyteVkra3Q/h69tCc5SkXo/XtTvAJYaRLvPgYjGN/awCSlJXtA8WyVCanCE=&_z_A0V5ayCS7tuzTo07c56NF_be5j1PCjHkvsWR5USpCWRCwaCC4qCMRABL0pKMFN4QQrhd5yeZxbohzxQW_eMye9nSBKu8m"
+    SERVICE_USER_API_KEY_PROD = "vCnzaBqkBv41uAGzSUfyDM35WusKsFptg7R9cYMsUFwUlK8Xm9GYWbtRFMYecba38pATWY5oNbCfzuxrJowAvcrCU6+ittF8fFrxlcY3Z1Y=&_z_A0V5ayCRgXTZUCkxug3TAmJk5k6WgIm4QkjyhE5nfYPOzr8PoXeMaYizFSkqs-a_JNKyLF4lrs-pvo6Ri28Z8PyWNxjwY"
 
     # change to ASSET_BASE_PATH  = "https://${module.asset_cdn.dns_name}/${var.asset_hash}" if asset_cdn is enabled
     ASSET_BASE_PATH = "https://${local.assets_bucket_name}.s3.amazonaws.com/${var.asset_hash}"

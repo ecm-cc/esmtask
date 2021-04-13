@@ -17,5 +17,6 @@ module.exports = {
         'no-use-before-define': ['error', { functions: false, classes: false }],
         'max-len': ['error', { code: 160 }],
         'no-console': 'off',
+        'no-param-reassign': 'off',
     },
 };

@@ -1,9 +1,12 @@
-<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attachments">
+<div class="attachments mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
     <span class="mdc-typography--subtitle1">
-        Angehangene Dokumente
+        Angehängte Dokumente
     </span>
-    <ul class="mdc-list mdc-layout-grid__cell mdc-layout-grid__cell--span-12 attachment-list">
-    </ul>
+    <br>
+    <br>
+    <div class="mdc-layout-grid" style="padding: 0;">
+        <div class="mdc-layout-grid__inner attachment-list"></div>
+    </div>
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 button-cell">
     {{> button title="Neue Akte erstellen" onclick="showCreateDossier()"}}

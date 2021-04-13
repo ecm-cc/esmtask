@@ -20,12 +20,8 @@ const handlebars = hbs({
     partialsDir: `${__dirname}/views/partials/`,
     helpers: {
         helpers,
-        readableTime(timeString) {
-            const date = new Date(timeString);
-            const dateOptions = {
-                year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin',
-            };
-            return date.toLocaleString('de-DE', dateOptions);
+        revertSubject(subjectString) {
+            return encodeURIComponent(`Rückfrage zu: ${subjectString}`);
         },
         isContract(type, options) {
             if (type === 'rentalContract' || type === 'supplierContract') {

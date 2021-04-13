@@ -14,16 +14,30 @@ module.exports = (assetBasePath) => {
         console.log(`SystemBaseUri:${req.systemBaseUri}`);
         const config = configLoader.getLocalConfig(req.tenantId);
         const { taskID } = req.query;
-        const options = getHTTPOptions(req);
-        const task = await loadTask(taskID, options, config);
-        const metaData = await util.getMetaData(task, assetBasePath, config);
+        const type = req.query.type || '';
+        let options;
+        let task;
+        let metaData;
+        if (type === 'task') {
+            options = getHTTPOptions(req);
+            task = await loadTask(taskID, options, config);
+            metaData = await util.getMetaData(task, assetBasePath, config);
+        }
         res.format({
             'application/hal+json': () => {
                 res.send({
                 });
             },
             'text/html': () => {
-                if (task.metadata.linkedContract.values[0] === '0') {
+                if (type === '') {
+                    res.render('loading', {
+                        title: 'Lädt..',
+                        stylesheet: `${assetBasePath}/global.css`,
+                        script: `${assetBasePath}/loading.js`,
+                        body: '/../views/loading.hbs',
+                        taskID,
+                    });
+                } else if (task.metadata.linkedContract.values[0] === '0') {
                     res.render('task', {
                         title: task.subject,
                         stylesheet: `${assetBasePath}/global.css`,
@@ -31,6 +45,7 @@ module.exports = (assetBasePath) => {
                         fontawesome: `${assetBasePath}/fontawesome.js`,
                         body: '/../views/task.hbs',
                         task,
+                        subject: task.subject,
                         taskString: JSON.stringify(task),
                         metaData: JSON.stringify(metaData),
                     });
@@ -40,6 +55,7 @@ module.exports = (assetBasePath) => {
                         stylesheet: `${assetBasePath}/global.css`,
                         script: `${assetBasePath}/succeded.js`,
                         body: '/../views/succeded.hbs',
+                        subject: task.subject,
                         task,
                         taskString: JSON.stringify(task),
                         metaData: JSON.stringify(metaData),
@@ -62,8 +78,9 @@ module.exports = (assetBasePath) => {
             const postData = req.body;
             const { type } = req.query;
             const { taskID } = req.query;
+            const documentProperties = postData.documentProperties ? JSON.parse(postData.documentProperties) : null;
             const dossierID = await util.createDossier(postData, options, config, type);
-            await util.attachDossier(taskID, dossierID, type, options, config);
+            await util.attachDossier(taskID, dossierID, type, documentProperties, postData.esmLink, options, config);
             res.status(200).send('OK');
         } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {
@@ -81,10 +98,12 @@ module.exports = (assetBasePath) => {
             console.log(`SystemBaseUri:${req.systemBaseUri}`);
             const config = configLoader.getLocalConfig(req.tenantId);
             const options = getHTTPOptions(req);
+            const postData = req.body;
+            const documentProperties = postData.documentProperties ? JSON.parse(postData.documentProperties) : null;
             const { type } = req.query;
             const { dossierID } = req.query;
             const { taskID } = req.query;
-            await util.attachDossier(taskID, dossierID, type, options, config);
+            await util.attachDossier(taskID, dossierID, type, documentProperties, postData.esmLink, options, config);
             res.status(200).send('OK');
         } catch (err) {
             if (err.response && err.response.data && err.response.data.message) {

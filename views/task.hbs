@@ -16,7 +16,7 @@
             {{> customerContractDefaultDocuments task=task.metadata}}
          {{/eq}}
          {{#eq task.metadata.contractType.values.[0] "customerContract"}}
-            {{> customerContract task=task.metadata}}
+            {{> customerContract task=task.metadata subject=task.subject}}
          {{/eq}}
          {{> attachments}}
          {{#isContract task.metadata.contractType.values.[0]}}

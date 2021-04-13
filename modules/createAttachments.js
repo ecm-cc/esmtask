@@ -13,7 +13,7 @@ module.exports = async (postData, config, options) => {
 async function createAttachment(postData, attachmentID, config, options) {
     const attachmentResponse = await downloadAttachment(attachmentID, config);
     const attachmentPayload = attachmentResponse.data;
-    const attachmentFilename = attachmentResponse.headers['content-disposition'].split('filename=')[1];
+    const attachmentFilename = getFileName(attachmentResponse.headers['content-disposition']);
     const documentURI = await uploadDocument(attachmentPayload, config, options);
     await createDocument(postData, documentURI, attachmentFilename, config, options);
 }
@@ -29,6 +29,17 @@ async function downloadAttachment(attachmentID, config) {
     };
     const response = await axios(ivantiOptions);
     return response;
+}
+
+function getFileName(dispositionHeader) {
+    const fileName = dispositionHeader.split('filename=')[1];
+    if (fileName.includes('"=?utf-8?B?')) {
+        return Buffer.from(fileName.substring(11, fileName.length - 3), 'base64').toString();
+    }
+    if (fileName[0] === '"') {
+        return fileName.substring(1, fileName.length - 1);
+    }
+    return fileName;
 }
 
 async function uploadDocument(attachmentPayload, config, options) {

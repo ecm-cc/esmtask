@@ -12,7 +12,7 @@ window.onload = async () => {
     task = $('#data-container').data('task');
     type = task.metadata.contractType.values[0] === 'supplierContract' || task.metadata.contractType.values[0] === 'rentalContract' ? 'contract' : 'case';
     metaData = $('#data-container').data('id');
-    await loadDossier();
+    await loadDossierLinks();
     hideOverlay();
 };
 
@@ -32,13 +32,13 @@ function initMDCElements() {
     if ($('.date-field').val()) {
         const date = new Date($('.date-field').val());
         const dateOptions = {
-            year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'Europe/Berlin',
+            year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'Europe/Berlin',
         };
         $('.date-field').val(date.toLocaleString('de-DE', dateOptions));
     }
 }
 
-async function loadDossier() {
+async function loadDossierLinks() {
     const dossierDetailLink = `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/o2/${task.metadata.linkedContract.values[0]}`;
     const dossierResponse = await $.ajax({
         url: dossierDetailLink,
@@ -51,7 +51,12 @@ async function loadDossier() {
         internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vorgangsnummer (intern)').value;
     }
     const dossierLink = `<a href="${dossierDetailLink}#details" target="dapi_navigate">${internalNumber}</a>`;
-    $('#contract-text').html(`Die Dokumente wurden ${dossierLink} vom Typ "${dossierResponse.category}" hinzugefügt.`);
+    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&`;
+    // eslint-disable-next-line max-len
+    const esmLink = `${esmBaseLink}ObjectType=ServiceReq%23&CommandData=RecId%2c%3d%2c0%2c${task.metadata.serviceRequestTechnicalID.values[0]}%2cstring%2cAND%7c#1615981839639`;
+    const esmLinkText = `<a href="${esmLink}" target="_blank">hier</a>`;
+    $('#contract-text').html(`Die Dokumente wurden der "${dossierResponse.category}" ${dossierLink} hinzugefügt. 
+    Das ESM-Ticket ist ${esmLinkText} hinterlegt.`);
 }
 
 function closeServiceRequest() {

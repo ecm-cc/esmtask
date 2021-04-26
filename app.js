@@ -29,6 +29,9 @@ const handlebars = hbs({
             }
             return options.inverse(this);
         },
+        createLongValue(value1, value2, value3, value4) {
+            return value1 + value2 + value3 + value4;
+        },
     },
 });
 app.set('views', path.join(__dirname, 'views'));

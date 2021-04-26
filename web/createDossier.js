@@ -244,6 +244,7 @@ function sendDossier(postData) {
     createDialog.open();
     createDialog.listen('MDCDialog:closed', (reason) => {
         if (reason.detail.action === 'ok') {
+            $('.save-button').hide();
             showOverlay();
             $.ajax({
                 timeout: 90000,
@@ -256,9 +257,11 @@ function sendDossier(postData) {
                 // eslint-disable-next-line no-restricted-globals
                 location.reload();
             }).fail((err) => {
+                hideOverlay();
                 console.error(err);
                 failSnackbar(`Die Verknüpfung konnte aufgrund eines Fehlers nicht durchgeführt werden: ${err.responseJSON ? err.responseJSON.reason : err}`);
-                hideOverlay();
+                // eslint-disable-next-line no-restricted-globals
+                location.reload();
             });
         }
     });

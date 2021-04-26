@@ -17,11 +17,19 @@ async function buildTaskJSON(postData, userID, config, options) {
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
     task.sender = userID;
     task.retentionTime = 'P365D';
+    task.context = {
+        key: 'ESM_Interface',
+        type: 'Task',
+        name: 'ESM Service Request',
+    };
     task.metadata = postData.form.map((form) => ({
         key: form.key,
         caption: form.caption,
         values: form.values[0] ? form.values : [''],
     }));
+    task.metadata = task.metadata.filter((metaData) => !config.longFields.includes(metaData.key));
+    const longFields = getLongFields(postData.form, config.longFields);
+    task.metadata = task.metadata.concat(longFields);
     task.metadata.push({
         key: 'contractType',
         caption: 'Vertragsart',
@@ -96,4 +104,38 @@ async function getAssignedGroup(contractType, isDebug, config, options) {
     const response = await axios(httpOptions);
     const groupID = response.data.resources.find((group) => group.displayName === groupName).id;
     return [groupID];
+}
+
+function getLongFields(formData, longfields) {
+    const metaData = [];
+    const fieldValues = formData.map((form) => ({
+        key: form.key,
+        caption: form.caption,
+        values: form.values[0] ? form.values : [''],
+    }));
+    const longs = fieldValues.filter((value) => longfields.includes(value.key));
+    longs.forEach((longField) => {
+        const longString = longField.values[0];
+        metaData.push({
+            key: longField.key,
+            caption: longField.caption,
+            values: [longString.substring(0, 254)],
+        });
+        metaData.push({
+            key: `${longField.key}2`,
+            caption: `${longField.caption} (2)`,
+            values: [longString.substring(254, 508)],
+        });
+        metaData.push({
+            key: `${longField.key}3`,
+            caption: `${longField.caption} (3)`,
+            values: [longString.substring(508, 762)],
+        });
+        metaData.push({
+            key: `${longField.key}4`,
+            caption: `${longField.caption} (4)`,
+            values: [longString.substring(762, 1016)],
+        });
+    });
+    return metaData;
 }

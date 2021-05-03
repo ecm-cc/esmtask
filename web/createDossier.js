@@ -213,8 +213,8 @@ function saveCase() {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder mit gültigen Werten!');
         return;
     }
-    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType`;
-    const esmLink = `${esmBaseLink}=ServiceReq#CommandData=RecId,=,0,${task.metadata.serviceRequestTechnicalID.values[0]},string,AND|#1615981839639`;
+    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType=Service`;
+    const esmLink = `${esmBaseLink}Req%23&CommandData=RecId%2c%3d%2c0%2c${task.metadata.serviceRequestTechnicalID.values[0]}%2cstring%2cAND%7c#1615981839639`;
     const postData = {
         type: 'case',
         caseNumber: $('#caseNumberCreate').val(),

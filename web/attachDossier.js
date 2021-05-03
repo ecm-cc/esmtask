@@ -102,8 +102,9 @@ function collectdocumentProperties() {
 
 function attachDossier(dossierID) {
     const postData = {};
-    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType`;
-    postData.esmLink = `${esmBaseLink}=ServiceReq#CommandData=RecId,=,0,${task.metadata.serviceRequestTechnicalID.values[0]},string,AND|#1615981839639`;
+    const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType=ServiceRe`;
+    postData.esmLink = `${esmBaseLink}q%23&CommandData=RecId%2c%3d%2c0%2c${task.metadata.serviceRequestTechnicalID.values[0]}%2cstring%2cAND%7c#1615981839639`;
+
     if (type === 'case') {
         postData.documentProperties = JSON.stringify(collectdocumentProperties());
     }

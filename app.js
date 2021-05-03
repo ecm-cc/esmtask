@@ -30,7 +30,12 @@ const handlebars = hbs({
             return options.inverse(this);
         },
         createLongValue(value1, value2, value3, value4) {
-            return value1 + value2 + value3 + value4;
+            const string1 = value1 || '';
+            const string2 = value2 || '';
+            const string3 = value3 || '';
+            const string4 = value4 || '';
+            const longString = string1 + string2 + string3 + string4;
+            return longString === '' ? null : longString;
         },
     },
 });

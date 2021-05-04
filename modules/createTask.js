@@ -9,10 +9,10 @@ module.exports = async (postData, config, options) => {
 
 async function buildTaskJSON(postData, userID, config, options) {
     const task = {};
-    task.subject = postData.serviceRequestTitle;
+    task.subject = postData.serviceRequestTitle.substring(0, 255);
     const commentsField = postData.form.find((field) => field.key === 'comments');
     const notesField = postData.form.find((field) => field.key === 'notes');
-    task.description = commentsField ? (commentsField.values[0] || '') : (notesField.values[0] || '');
+    task.description = commentsField ? (commentsField.values[0] || '').substring(0, 255) : (notesField.values[0] || '').substring(0, 255);
     task.assignees = await getAssignedGroup(postData.contractType, postData.isDebug, config, options);
     task.correlationKey = `esm_${postData.serviceRequestTechnicalID}_${Date.now()}`;
     task.sender = userID;

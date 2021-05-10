@@ -13,6 +13,7 @@ module.exports = () => {
         console.log(`SystemBaseUri:${req.systemBaseUri}`);
         try {
             const postData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+            console.log('Request Payload: ', JSON.stringify(postData));
             const config = configLoader.getLocalConfig(req.tenantId);
             const options = getHTTPOptions();
             const authSessionId = await login(config.host, req.get('Authorization').split(' ')[1]);
@@ -22,7 +23,6 @@ module.exports = () => {
             res.sendStatus(200);
         } catch (err) {
             console.error(err);
-            res.status(500).send(err.response ? err.response.data : err);
         }
     });
     return router;

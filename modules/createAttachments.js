@@ -1,5 +1,9 @@
 const axios = require('axios');
+const rax = require('retry-axios');
 const propertyMapping = require('@ablegroup/propertymapping');
+const getRetryConfig = require('./getRetryConfig');
+
+rax.attach();
 
 module.exports = async (postData, config, options) => {
     propertyMapping.initDatabase();
@@ -48,6 +52,7 @@ async function uploadDocument(attachmentPayload, config, options) {
     httpOptions.headers['Content-Type'] = 'application/octet-stream';
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/blob/chunk`;
     httpOptions.data = Buffer.from(attachmentPayload);
+    httpOptions.raxConfig = getRetryConfig(httpOptions);
     const response = await axios(httpOptions);
     return response.headers.location;
 }
@@ -81,5 +86,6 @@ async function createDocument(postData, contentLocationUri, filename, config, op
             ],
         },
     };
+    httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     await axios(httpOptions);
 }

@@ -21,7 +21,8 @@
     "express-handlebars": "^5.2.0",
     "handlebars-helpers": "^0.10.0",
     "http-errors": "^1.8.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "retry-axios": "^2.4.0"
   },
   "devDependencies": {
     "eslint": "^7.3.1",

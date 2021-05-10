@@ -1,5 +1,9 @@
 const axios = require('axios');
+const rax = require('retry-axios');
 const propertyMapping = require('@ablegroup/propertymapping');
+const getRetryConfig = require('./getRetryConfig');
+
+rax.attach();
 
 module.exports = async (postData, options, config) => {
     propertyMapping.initDatabase();
@@ -48,6 +52,7 @@ module.exports = async (postData, options, config) => {
             ],
         },
     };
+    httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     const response = await axios(httpOptions);
     const uri = response.headers.location.split('?')[0];
     return uri.split('/')[5];
@@ -56,6 +61,7 @@ module.exports = async (postData, options, config) => {
 async function getUserNameByUPN(upn, config, options) {
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/identityprovider/scim/users/`;
+    httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     const response = await axios(httpOptions);
     const users = response.data.resources;
     return users.find((user) => user.userName === upn) ? users.find((user) => user.userName.toLowerCase() === upn.toLowerCase()).displayName : '';
@@ -64,6 +70,7 @@ async function getUserNameByUPN(upn, config, options) {
 async function getCurrentUserUPN(config, options) {
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/identityprovider/validate`;
+    httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     const response = await axios(httpOptions);
     return response.data.displayName;
 }
@@ -76,6 +83,7 @@ async function getCaseNumber(categoryKey, caseNumberField, options, config) {
     const internalNumberPrefix = config.internalNumberPrefix[categoryKey];
     httpOptions.url = url;
     httpOptions.method = 'get';
+    httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     const searchResults = (await axios(httpOptions)).data;
     let latestInternalNumber;
     let found = false;

@@ -43,12 +43,12 @@ async function buildTaskJSON(postData, userID, config, options) {
     task.metadata.push({
         key: 'serviceRequestID',
         caption: 'Service Request ID',
-        values: [postData.serviceRequestID || ''],
+        values: [`${postData.serviceRequestID}` || ''],
     });
     task.metadata.push({
         key: 'linkedContract',
         caption: 'Verknüpfter Vertrag',
-        values: [0],
+        values: ['0'],
     });
     task.metadata.push({
         key: 'isDebug',

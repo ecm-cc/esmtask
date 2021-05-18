@@ -43,7 +43,9 @@ module.exports = async (postData, options, config) => {
                 },
                 {
                     key: caseProperties.find((property) => property.displayname === 'Ansprechpartner Organisationseinheit').propertyKey,
-                    values: [await getUserNameByUPN(postData.orgunitContact, config, options)],
+                    // TODO: Remove fourth and fifth argument when d-velop ticket 00155914 is solved
+                    // eslint-disable-next-line max-len
+                    values: [await getUserNameByUPN(postData.orgunitContact, config, options, caseCategory.categoryKey, caseProperties.find((property) => property.displayname === 'Ansprechpartner Organisationseinheit').propertyKey)],
                 },
                 {
                     key: caseProperties.find((property) => property.displayname === 'Verantwortlich').propertyKey,
@@ -58,13 +60,40 @@ module.exports = async (postData, options, config) => {
     return uri.split('/')[5];
 };
 
-async function getUserNameByUPN(upn, config, options) {
+async function getUserNameByUPN(upn, config, options, categoryKey, propertyKey) {
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/identityprovider/scim/users/`;
     httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     const response = await axios(httpOptions);
     const users = response.data.resources;
-    return users.find((user) => user.userName === upn) ? users.find((user) => user.userName.toLowerCase() === upn.toLowerCase()).displayName : '';
+    const userName = users.find((user) => user.userName === upn) ? users.find((user) => user.userName.toLowerCase() === upn.toLowerCase()).displayName : '';
+
+    // TODO: Re-use this when d-velop ticket 00155914 is solved and delete all below this return
+    // return users.find((user) => user.userName === upn) ? users.find((user) => user.userName.toLowerCase() === upn.toLowerCase()).displayName : '';
+
+    const httpOptionsPost = JSON.parse(JSON.stringify(options));
+    httpOptionsPost.url = `${config.host}/dms/r/${config.repositoryId}/validvalues/p/${propertyKey}`;
+    httpOptionsPost.method = 'POST';
+    httpOptionsPost.data = {
+        dossierId: null,
+        extendedProperties: { [propertyKey]: userName.substring(0, 45) },
+        multivalueExtendedProperties: {},
+        objectDefinitionId: categoryKey,
+        remarks: {},
+        storeObject: {
+            masterFileName: null, filename: null, parentId: null, dmsObjectId: null, displayValue: null,
+        },
+        displayValue: null,
+        dmsObjectId: null,
+        filename: null,
+        masterFileName: null,
+        parentId: null,
+        systemProperties: {},
+        type: 2,
+    };
+    httpOptionsPost.raxConfig = getRetryConfig(rax, httpOptionsPost);
+    const responsePost = await axios(httpOptionsPost);
+    return responsePost.data.values[0].value;
 }
 
 async function getCurrentUserUPN(config, options) {

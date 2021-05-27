@@ -11,10 +11,10 @@ locals {
   # If you add stages use keys which result in the stage appended at the end of the list!
   # If you are uncertain use terraform plan to check the changes terraform would make.
   stages = {
-    "a_prod" = "318"
+    "a_prod" = "326"
     "b_dev"  = "$LATEST"
-    "c_qas" = "318"
-    "d_version" = "318"
+    "c_qas" = "326"
+    "d_version" = "326"
   }
 
   // to avoid unnecessary lambda function deployments the build version env var is only changed if the lambda function code has been changed

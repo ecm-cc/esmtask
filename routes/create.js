@@ -12,6 +12,7 @@ module.exports = () => {
         console.log(`TenantId:${req.tenantId}`);
         console.log(`SystemBaseUri:${req.systemBaseUri}`);
         try {
+            console.log('Starting request');
             const postData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
             console.log('Request Payload: ', JSON.stringify(postData));
             const config = configLoader.getLocalConfig(req.tenantId);
@@ -20,9 +21,12 @@ module.exports = () => {
             options.headers.Authorization = `Bearer ${authSessionId}`;
             await createAttachments(postData, config, options);
             await createTask(postData, config, options);
+            console.log('Completion, sending Code 200');
             res.sendStatus(200);
         } catch (err) {
             console.error(err);
+            console.log('Error, sending Code 500');
+            res.sendStatus(500);
         }
     });
     return router;

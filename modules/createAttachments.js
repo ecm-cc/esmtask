@@ -51,8 +51,10 @@ async function uploadDocument(attachmentPayload, config, options) {
     httpOptions.method = 'post';
     httpOptions.headers['Content-Type'] = 'application/octet-stream';
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/blob/chunk`;
+    httpOptions.maxBodyLength = config.maxBodyLength;
+    httpOptions.maxContentLength = config.maxContentLength;
     httpOptions.data = Buffer.from(attachmentPayload);
-    httpOptions.raxConfig = getRetryConfig(httpOptions);
+    httpOptions.raxConfig = getRetryConfig(rax, httpOptions);
     const response = await axios(httpOptions);
     return response.headers.location;
 }

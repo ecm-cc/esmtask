@@ -14,6 +14,7 @@ function showCreateDossier() {
 async function loadAsyncData() {
     await generateInternalNumbers();
     if (type === 'contract') {
+        // TODO: Is this still relevant?
         await loadDropdown(metaData.keys.contractType, 'option-list-contractType');
         await loadDropdown(metaData.keys.contractStatus, 'option-list-contractStatus');
         $('#partnerName').on('keyup', async () => { await listenPartnerInput(); });
@@ -32,6 +33,7 @@ async function loadAsyncData() {
 
 async function generateInternalNumbers() {
     if (type === 'contract') {
+        // TODO: Is this still relevant?
         const generalContractInternalNumber = await loadNextInternalNumber(metaData.keys.generalContractCategory);
         const singleContractInternalNumber = await loadNextInternalNumber(metaData.keys.singleContractCategory);
         if (task.metadata.contractType.values[0] === 'supplierContract') {
@@ -94,6 +96,7 @@ async function loadNextInternalNumber(categoryKey) {
 }
 
 async function loadDropdown(key, listID, searchString, isAttachment) {
+    // TODO: Add field for contractType when looking for "Vertragsuntertyp"
     const dropdownValues = await $.ajax({
         method: 'POST',
         url: `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/validvalues/p/${key}?rownumber=1`,
@@ -127,6 +130,7 @@ function getDMSBody(searchString, isAttachment) {
     const multivalueExtendedProperties = {};
     let objectDefinitionId;
     if (type === 'contract') {
+        // TODO: Is this still right?
         objectDefinitionId = metaData.keys.generalContractCategory;
     } else if (isAttachment) {
         objectDefinitionId = metaData.keys.caseDocumentCategory;
@@ -186,6 +190,7 @@ function setPartner(partnerName) {
 }
 
 function saveContract() {
+    // TODO: Is this still right?
     if (!$('.option-1').is(':checked') && !$('.option-2').is(':checked')) {
         failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
         return;

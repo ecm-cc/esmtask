@@ -2,6 +2,7 @@ const axios = require('axios');
 const propertyMapping = require('@ablegroup/propertymapping');
 
 module.exports = async (dossierID, esmLink, options, config) => {
+    // TODO: Add CS as well
     propertyMapping.initDatabase();
     const caseCategory = await propertyMapping.getCategory(config.stage, null, null, 'Legal - Vorgangsakte');
     const caseProperties = await propertyMapping.getPropertiesByCategory(config.stage, caseCategory.categoryID);

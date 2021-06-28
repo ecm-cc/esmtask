@@ -7,6 +7,7 @@ function showAttachDossier() {
 }
 
 function searchContract() {
+    // TODO: Is this still right?
     const contractNumber = $('#contractNumberSearch').val();
     const contractDesignation = $('#contractDesignation').val();
     const category = $('.option-1').is(':checked') ? metaData.keys.singleContractCategory : metaData.keys.generalContractCategory;
@@ -34,6 +35,7 @@ function searchCase() {
 }
 
 function getSearchURL(internalNumber, designation, category) {
+    // TODO: Is this still right?
     const internalNumberField = type === 'contract' ? metaData.keys.contractNumberInternal : metaData.keys.caseNumberInternal;
     const designationField = type === 'contract' ? metaData.keys.contractDesignation : metaData.keys.caseDesignation;
     const searchHost = `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/sr/`;
@@ -108,6 +110,7 @@ function attachDossier(dossierID) {
     if (type === 'case') {
         postData.documentProperties = JSON.stringify(collectdocumentProperties());
     }
+    // TODO: Add documentProperties for contract as well
     attachDialog.open();
     attachDialog.listen('MDCDialog:closed', (reason) => {
         if (reason.detail.action === 'ok') {

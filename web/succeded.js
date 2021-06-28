@@ -10,6 +10,7 @@ window.onload = async () => {
     showOverlay();
     initMDCElements();
     task = $('#data-container').data('task');
+    // TODO: Is this still right?
     type = task.metadata.contractType.values[0] === 'supplierContract' || task.metadata.contractType.values[0] === 'rentalContract' ? 'contract' : 'case';
     metaData = $('#data-container').data('id');
     await loadDossierLinks();
@@ -46,6 +47,7 @@ async function loadDossierLinks() {
     });
     let internalNumber;
     if (type === 'contract') {
+        // TODO: Is this still right?
         internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vertragsnummer (intern)').value;
     } else {
         internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vorgangsnummer (intern)').value;

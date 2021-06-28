@@ -1,6 +1,7 @@
 const axios = require('axios');
 const propertyMapping = require('@ablegroup/propertymapping');
 
+// TODO: This might be written new for changed input fields
 module.exports = async (postData, options, config) => {
     propertyMapping.initDatabase();
     const contractCategory = await propertyMapping.getCategory(config.stage, null, postData.categoryKey);

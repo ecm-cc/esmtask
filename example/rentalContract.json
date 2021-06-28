@@ -1,87 +1,178 @@
 {
     "form": [
         {
-            "key": "isSubleaseAgreement",
-            "caption": "Handelt es sich um einen Untermietvertrag?",
+            "key": "isSubleasing",
+            "caption": "",
             "values": [
                 true
             ]
         },
         {
-            "key": "hasChanges",
-            "caption": "Wurden Texte im Standard-Untermietvertrag geändert?",
+            "key": "hasChangesSubleasing",
+            "caption": "",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "isOfficeSpace",
+            "caption": "",
             "values": [
                 false
             ]
         },
         {
-            "key": "isRentalOffice",
-            "caption": "Handelt es sich um einen Mietvertag für Büroräume?",
+            "key": "isParkingSpace",
+            "caption": "",
+            "values": [
+                true
+            ]
+        },
+        {
+            "key": "isAdditionalContract",
+            "caption": "",
             "values": [
                 false
             ]
         },
         {
-            "key": "isRentalParking",
-            "caption": "Handelt es sich um einen Mietvertag für Stellplätze?",
+            "key": "rentalObject",
+            "caption": "Mietobjekt",
             "values": [
-                true
+                "Panoramaparkhaus mit Meerblick"
             ]
         },
         {
-            "key": "isAdditional",
-            "caption": "Handelt es sich um eine Ergänzung/Zusatz/Nachtrag zu einem bereits bestehenden Mietvertrag?",
-            "values": [
-                true
-            ]
-        },
-        {
-            "key": "rentalObjectAddress",
-            "caption": "Adresse des Mietobjektes",
-            "values": [
-                "Oskar-Jäger-Straße 23, 50825 Köln"
-            ]
-        },
-        {
-            "key": "desiredRentalStart",
+            "key": "desiredStartOfRental",
             "caption": "Gewünschter Mietbeginn",
             "values": [
-                1625094000000
+                "5/15/2021 08:00:00 AM"
             ]
         },
         {
-            "key": "responsiblePerson",
-            "caption": "Vertragsverantwortlich",
+            "key": "contractResponsiblePerson",
+            "caption": "Vertragsverantwortlicher",
             "values": [
-                "christopher.dick@able-group.de"
+                "alexander.strutz@able-group.de"
+            ]
+        },
+        {
+            "key": "position",
+            "caption": "Position",
+            "values": [
+                "Werkstudent ECM"
+            ]
+        },
+        {
+            "key": "company",
+            "caption": "Unternehmen",
+            "values": [
+                "ABLE Management Services"
+            ]
+        },
+        {
+            "key": "salesArea",
+            "caption": "Vertriebsgebiet/Geschäftsbereich/Bereich",
+            "values": [
+                "Nordrhein"
+            ]
+        },
+        {
+            "key": "department",
+            "caption": "Niederlassung",
+            "values": [
+                "GL"
+            ]
+        },
+        {
+            "key": "authorizedPerson1",
+            "caption": "Zugriffsberechtigter 1",
+            "values": [
+                "patric.klein@able-group.de"
+            ]
+        },
+        {
+            "key": "authorizedPerson1Position",
+            "caption": "Position Zugriffsberechtigter 1",
+            "values": [
+                "Teamleiter ECM"
+            ]
+        },
+        {
+            "key": "authorizedPerson2",
+            "caption": "Zugriffsberechtigter 2",
+            "values": [
+                ""
+            ]
+        },
+        {
+            "key": "authorizedPerson2Position",
+            "caption": "Position Zugriffsberechtigter 2",
+            "values": [
+                ""
+            ]
+        },
+        {
+            "key": "authorizedPerson3",
+            "caption": "Zugriffsberechtigter 3",
+            "values": [
+                ""
+            ]
+        },
+        {
+            "key": "authorizedPerson3Position",
+            "caption": "Position Zugriffsberechtigter 3",
+            "values": [
+                ""
             ]
         },
         {
             "key": "contractPartner",
             "caption": "Vertragspartner",
             "values": [
-                "Manfred Mustermann"
+                "Max Müllermann"
             ]
         },
         {
-            "key": "administrator",
+            "key": "adminstrator",
             "caption": "Verwalter",
             "values": [
-                "Beathe Beispielfrau"
+                "Volker Verwalter"
             ]
         },
         {
-            "key": "commercialContact",
-            "caption": "Kaufmännischer Ansprechpartner",
+            "key": "partnerContact",
+            "caption": "Ansprechpartner",
             "values": [
-                "Klaus Kaufmann"
+                "Max Müllermann"
             ]
         },
         {
-            "key": "comments",
-            "caption": "Sonstige Bemerkungen",
+            "key": "partnerPhone",
+            "caption": "Telefon-Nr.",
             "values": [
-                "Hier gibt es keine weiteren Anmerkungen"
+                "022615874562"
+            ]
+        },
+        {
+            "key": "partnerMobile",
+            "caption": "Mobil-Nr.",
+            "values": [
+                "+491578753962"
+            ]
+        },
+        {
+            "key": "partnerMail",
+            "caption": "E-Mail",
+            "values": [
+                "Max.Müllermann@audi.de"
+            ]
+        },
+        {
+            "key": "notes",
+            "caption": "Bemerkungen",
+            "values": [
+                ""
             ]
         }
     ],

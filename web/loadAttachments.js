@@ -33,6 +33,7 @@ async function renderDocuments() {
                     </a>
                 </div>
             </div>
+            TODO: CS-Änderung oder Anpassungen je nach Legal/CS für die nötigen Felder bei Dokumenten
             <div class="attachment-element mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                 <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
                     <span class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">

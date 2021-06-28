@@ -70,6 +70,7 @@ async function createDocument(documentMeta, dossierID, contentLocationUri, type,
     let dossierDocumentCategory;
     let dossierDocumentProperties;
     if (type === 'contract') {
+        // TODO: Check if this is stil right
         dossierDocumentCategory = dossierDocumentCategories.find((category) => category.displayname.includes('unterlage')); // Needed, but not good
         dossierDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, dossierDocumentCategory.categoryID);
     } else {
@@ -94,6 +95,7 @@ async function createDocument(documentMeta, dossierID, contentLocationUri, type,
 }
 
 function getContractSourceProperties(dossierDocumentProperties, documentMeta) {
+    // TODO: Check if this is still right
     return [
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,

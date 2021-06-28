@@ -58,6 +58,7 @@ function initMDCElements() {
         $('.date-field').val(date.toLocaleString('de-DE', dateOptions));
     }
     if (type === 'contract') {
+        // TODO: Is this still right?
         menu = new mdc.menu.MDCMenu(document.querySelector('#partner-options'));
         const radio = mdc.radio.MDCRadio.attachTo(document.querySelector('.mdc-radio'));
         const formField = mdc.formField.MDCFormField.attachTo(document.querySelector('.mdc-form-field'));

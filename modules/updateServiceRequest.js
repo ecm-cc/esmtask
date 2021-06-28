@@ -7,17 +7,20 @@ module.exports = async (isCompleted, serviceRequestID, postData, config) => {
         headers: {
             Authorization: `rest_api_key=${config.ivantiAPIKey}`,
         },
+        //TODO: Change this for new CS values
         data: isCompleted ? getCompleteBody(postData) : getUpdateBody(postData),
     };
     await axios(ivantiOptions);
 };
 
+// TODO: Make this for CS as well
 function getCompleteBody() {
     return {
         ECM_ExternalStatus_pmx: 90,
     };
 }
 
+// TODO: Make this for CS as well
 function getUpdateBody(postData) {
     return {
         ECM_CaseID_pmx: postData.caseID,

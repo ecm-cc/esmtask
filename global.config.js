@@ -30,7 +30,7 @@ function getLocalConfig(tenant) {
             XCASE: `VG-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
         },
         longFields: ['contractualRelation', 'targetBusiness', 'risks', 'notes', 'customizing', 'changes'],
-        debugAssignees: ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F'],
+        debugAssignees: ['E6140B53-FF0D-4AA2-8F3B-79962F85EB61', '50931705-1A37-41A5-BAE5-25020D56604F', 'A1869746-3DC3-4DA6-B795-B04D6A5276DC'],
         maxBodyLength: 28000000,
         maxContentLength: 28000000,
     };
@@ -62,7 +62,7 @@ function getLocalConfig(tenant) {
             XCASE: `VG-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
         },
         longFields: ['contractualRelation', 'targetBusiness', 'risks', 'notes', 'customizing', 'changes'],
-        debugAssignees: ['3F8875B7-B60A-43C7-92BB-6A67E39F1504', '50931705-1A37-41A5-BAE5-25020D56604F'],
+        debugAssignees: ['3F8875B7-B60A-43C7-92BB-6A67E39F1504', '50931705-1A37-41A5-BAE5-25020D56604F', 'A1869746-3DC3-4DA6-B795-B04D6A5276DC'],
         maxBodyLength: 28000000,
         maxContentLength: 28000000,
     };
@@ -94,7 +94,7 @@ function getLocalConfig(tenant) {
             XCASE: `VG-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
         },
         longFields: ['contractualRelation', 'targetBusiness', 'risks', 'notes', 'customizing', 'changes'],
-        debugAssignees: ['F3CA1284-55C6-435F-9D7B-F2A60A256757', '616DE90F-8223-493B-A3DD-D3B74E9AFF7A'],
+        debugAssignees: ['F3CA1284-55C6-435F-9D7B-F2A60A256757', '616DE90F-8223-493B-A3DD-D3B74E9AFF7A', 'A1869746-3DC3-4DA6-B795-B04D6A5276DC'],
         maxBodyLength: 28000000,
         maxContentLength: 28000000,
 
@@ -127,7 +127,7 @@ function getLocalConfig(tenant) {
             XCASE: `VG-${new Date().getFullYear()}-\\d\\d\\d\\d\\d`,
         },
         longFields: ['contractualRelation', 'targetBusiness', 'risks', 'notes', 'customizing', 'changes'],
-        debugAssignees: ['F3CA1284-55C6-435F-9D7B-F2A60A256757', 'F6800838-724A-48BF-B9BF-952CC935741D'],
+        debugAssignees: ['F3CA1284-55C6-435F-9D7B-F2A60A256757', 'F6800838-724A-48BF-B9BF-952CC935741D', 'A1869746-3DC3-4DA6-B795-B04D6A5276DC'],
         maxBodyLength: 28000000,
         maxContentLength: 28000000,
     };

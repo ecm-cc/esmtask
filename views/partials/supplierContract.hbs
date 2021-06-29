@@ -1,34 +1,105 @@
-<!-- TODO: Add additional buttons/fields for cs -->
+<!-- TODO: Add additional buttons for cs -->
 
-<!-- TODO: Rebuild -->
 
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> checkbox title=task.isDirectPurchase.caption value=task.isDirectPurchase.values.[0] id="isDirectPurchase"}}
+    {{> checkbox title=task.isFrameworkContract.caption value=task.isFrameworkContract.values.[0] id="isFrameworkContract"}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> checkbox title=task.isOfficeOrParking.caption value=task.isOfficeOrParking.values.[0] id="isOfficeOrParking"}}
+    {{> checkbox title=task.isAddition.caption value=task.isAddition.values.[0] id="isOfficeOrParking"}}
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.task.caption value=task.task.values.[0] id="task" disabled=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> checkbox title=task.isGeneralAgreement.caption value=task.isGeneralAgreement.values.[0] id="isGeneralAgreement"}}
+    {{> checkbox title=task.hasContract.caption value=task.hasContract.values.[0] id="hasContract"}}
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.isOpenBook.caption value=task.isOpenBook.values.[0] id="isOpenBook"}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> checkbox title=task.isAdditional.caption value=task.isAdditional.values.[0] id="isAdditional"}}
+    {{> input title=task.openBookParagraph.caption value=task.openBookParagraph.values.[0] id="openBookParagraph" disabled=true}}
 </div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.hasBonus.caption value=task.hasBonus.values.[0] id="hasBonus"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.bonusParagraph.caption value=task.bonusParagraph.values.[0] id="bonusParagraph" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> checkbox title=task.hasSalesCommitment.caption value=task.hasSalesCommitment.values.[0] id="hasSalesCommitment"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.salesCommitmentParagraph.caption value=task.salesCommitmentParagraph.values.[0] id="salesCommitmentParagraph" disabled=true}}
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.reminder.caption value=task.reminder.values.[0] id="reminder" disabled=true}}
+</div>
+
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.responsiblePerson.caption value=task.responsiblePerson.values.[0] id="responsiblePerson" disabled=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-    {{> input title=task.creditorSAP.caption value=task.creditorSAP.values.[0] id="creditorSAP" disabled=true}}
+    {{> input title=task.position.caption value=task.position.values.[0] id="position" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.company.caption value=task.company.values.[0] id="company" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.salesArea.caption value=task.salesArea.values.[0] id="salesArea" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.department.caption value=task.department.values.[0] id="department" disabled=true}}
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.authorizedPerson1.caption value=task.authorizedPerson1.values.[0] id="authorizedPerson1" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.authorizedPerson1Position.caption value=task.authorizedPerson1Position.values.[0] id="authorizedPerson1Position" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.authorizedPerson2.caption value=task.authorizedPerson2.values.[0] id="authorizedPerson2" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.authorizedPerson2Position.caption value=task.authorizedPerson2Position.values.[0] id="authorizedPerson2Position" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.authorizedPerson3.caption value=task.authorizedPerson3.values.[0] id="authorizedPerson3" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.authorizedPerson3Position.caption value=task.authorizedPerson3Position.values.[0] id="authorizedPerson3Position" disabled=true}}
+</div>
+
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.supplier.caption value=task.supplier.values.[0] id="supplier" disabled=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.commercialContact.caption value=task.commercialContact.values.[0] id="commercialContact" disabled=true}}
 </div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.contactPhone.caption value=task.contactPhone.values.[0] id="contactPhone" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.contactMobile.caption value=task.contactMobile.values.[0] id="contactMobile" disabled=true}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.contactMail.caption value=task.contactMail.values.[0] id="contactMail" disabled=true}}
+</div>
+
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.contractSubject.caption value=task.contractSubject.values.[0] id="contractSubject" disabled=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
     {{> input title=task.contractValue.caption value=task.contractValue.values.[0] id="contractValue" disabled=true}}
 </div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+    {{> input title=task.subjectToApproval.caption value=task.subjectToApproval.values.[0] id="subjectToApproval" disabled=true}}
+</div>
+
+
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-    {{> inputTextarea title=task.comments.caption value=task.comments.values.[0]  value2=task.comments2.values.[0] value3=task.comments3.values.[0] value4=task.comments4.values.[0] id="comments" disabled=true}}
+    {{> inputTextarea title=task.notes.caption value=task.notes.values.[0]  value2=task.notes2.values.[0] value3=task.notes3.values.[0] value4=task.notes4.values.[0] id="notes" disabled=true}}
 </div>

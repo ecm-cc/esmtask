@@ -59,17 +59,10 @@ function initMDCElements() {
     }
     if (type === 'contract') {
         // TODO: Is this still right?
-        menu = new mdc.menu.MDCMenu(document.querySelector('#partner-options'));
+        // menu = new mdc.menu.MDCMenu(document.querySelector('#partner-options'));
         const radio = mdc.radio.MDCRadio.attachTo(document.querySelector('.mdc-radio'));
         const formField = mdc.formField.MDCFormField.attachTo(document.querySelector('.mdc-form-field'));
         formField.input = radio;
-        if (task.metadata.contractType.values[0] === 'supplierContract') {
-            if (task.metadata.isGeneralAgreement.values[0] === 'true') {
-                $('.option-2').attr('checked', true);
-            } else {
-                $('.option-1').attr('checked', true);
-            }
-        }
     }
 }
 

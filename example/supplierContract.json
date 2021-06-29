@@ -219,14 +219,12 @@
         }
     ],
     "attachments": [
-        "927384",
-        "9172532",
-        "9362347"
+        "E4B9A3BF50914DF3A1D5A03D65AA14DC"
     ],
     "contractType": "supplierContract",
     "serviceRequestID": "34534",
     "serviceRequestTechnicalID": "283749263",
-    "serviceRequestTitle": "Prüfung Lieferantenvertrag",
+    "serviceRequestTitle": "Lieferantenvertrag",
     "serviceRequestorUPN": "alexander.strutz@able-group.de",
     "serviceRequestorName": "Alexander Strutz",
     "isDebug": true

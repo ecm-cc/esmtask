@@ -2,35 +2,35 @@
     "form": [
         {
             "key": "isSubleasing",
-            "caption": "",
+            "caption": "Handelt es sich um einen Untermietvertrag?",
             "values": [
                 true
             ]
         },
         {
             "key": "hasChangesSubleasing",
-            "caption": "",
+            "caption": "Wurden Texte im Standard-Untermietvertrag geändert?",
             "values": [
                 true
             ]
         },
         {
             "key": "isOfficeSpace",
-            "caption": "",
+            "caption": "Handelt es sich um einen Mietvertag für Büroräume?",
             "values": [
                 false
             ]
         },
         {
             "key": "isParkingSpace",
-            "caption": "",
+            "caption": "Handelt es sich um einen Mietvertrag für Stellpätze?",
             "values": [
                 true
             ]
         },
         {
             "key": "isAdditionalContract",
-            "caption": "",
+            "caption": "Handelt es sich um eine Ergänzung/Zusatz/Nachtrag zu einem bereits bestehenden Mietvertrag?",
             "values": [
                 false
             ]
@@ -177,7 +177,7 @@
         }
     ],
     "attachments": [
-        "9284632"
+        "E4B9A3BF50914DF3A1D5A03D65AA14DC"
     ],
     "contractType": "rentalContract",
     "serviceRequestID": "34534",

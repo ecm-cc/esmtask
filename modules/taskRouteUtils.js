@@ -30,15 +30,21 @@ async function getMetaData(task, assetBasePath, config) {
     const caseType = caseProperties.find((property) => property.displayname === 'Vorgangstyp').propertyKey;
     const caseContractType = caseProperties.find((property) => property.displayname === 'Vertragstyp').propertyKey;
     const organisationUnit = caseProperties.find((property) => property.displayname === 'Organisationseinheit').propertyKey;
+
     const caseDocumentCategory = await propertyMapping.getCategory(config.stage, null, null, 'Legal - Vorgangsdokumente');
     const caseDocumentCategoryProperties = await propertyMapping.getPropertiesByCategory(config.stage, caseDocumentCategory.categoryID);
     const caseContractDocumentType = caseDocumentCategoryProperties.find((property) => property.displayname === 'Typ Vorgangsunterlage').propertyKey;
+    
+    const contractDocumentCategory = await propertyMapping.getCategory(config.stage, null, null, 'Lieferanten IND - Vertragsunterlage');
+    const contractDocumentCategoryProperties = await propertyMapping.getPropertiesByCategory(config.stage, contractDocumentCategory.categoryID);
+    const contractDocumentType = contractDocumentCategoryProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey;
     return {
         keys: {
             generalContractCategory: generalContractCategory.categoryKey,
             singleContractCategory: singleContractCategory.categoryKey,
             caseCategory: caseCategory.categoryKey,
             caseDocumentCategory: caseDocumentCategory.categoryKey,
+            contractDocumentCategory: contractDocumentCategory.categoryKey,
             contractNumberInternal,
             contractDesignation,
             contractStatus,
@@ -51,6 +57,7 @@ async function getMetaData(task, assetBasePath, config) {
             caseContractType,
             organisationUnit,
             caseContractDocumentType,
+            contractDocumentType
         },
         documentURL: await getDocumentURL(task, config),
         assetBasePath,

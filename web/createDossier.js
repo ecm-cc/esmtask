@@ -129,13 +129,18 @@ function getDMSBody(searchString, isAttachment) {
     const extendedProperties = {};
     const multivalueExtendedProperties = {};
     let objectDefinitionId;
-    if (type === 'contract') {
-        // TODO: Is this still right?
-        objectDefinitionId = metaData.keys.generalContractCategory;
-    } else if (isAttachment) {
-        objectDefinitionId = metaData.keys.caseDocumentCategory;
+    if(isAttachment) {
+        if(type === 'contract') {
+            objectDefinitionId = metaData.keys.contractDocumentCategory;
+        } else {
+            objectDefinitionId = metaData.keys.caseDocumentCategory;
+        }
     } else {
-        objectDefinitionId = metaData.keys.caseCategory;
+        if(type === 'contract') {
+            objectDefinitionId = metaData.keys.singleContractCategory;
+        } else {
+            objectDefinitionId = metaData.keys.caseCategory;
+        }
     }
     if (searchString) {
         extendedProperties[metaData.keys.partnerName] = searchString;

@@ -91,7 +91,7 @@ function renderResults(results) {
     $('.search-result-contract').show();
 }
 
-function collectdocumentProperties() {
+function collectCaseDocumentProperties() {
     const documentProperties = {};
     documents.items.forEach((doc) => {
         documentProperties[doc.id] = {
@@ -102,19 +102,49 @@ function collectdocumentProperties() {
     return documentProperties;
 }
 
+function collectContractDocumentProperties() {
+    const documentProperties = {};
+    documents.items.forEach((doc) => {
+        if (!$(`#upload-${doc.id}`).is(':checked')) {
+            dateString = $(`#date-${doc.id}`).val();
+            documentProperties[doc.id] = {
+                subject: $(`#subject-${doc.id}`).val(),
+                type: $(`#type-${doc.id} .mdc-list .mdc-list-item--selected`).data('value'),
+                folder: $(`#folder-${doc.id}`).val(),
+                date: dateString !== '' ? `${dateString.substring(6)}-${dateString.substring(3, 5)}-${dateString.substring(0, 2)}` : dateString,
+                version: $(`#version-${doc.id}`).val(),
+            };
+        }
+    });
+    return documentProperties;
+}
+
+function downloadFile(fileUrl, fileName) {
+    const a = document.createElement('a');
+    a.href = fileUrl;
+    a.setAttribute('download', fileName);
+    a.click();
+}
+
 function attachDossier(dossierID) {
     const postData = {};
     const esmBaseLink = `${metaData.config.ivantiBaseURL}/Default.aspx?Scope=ObjectWorkspace&Role=BusinessServiceAnalyst&CommandId=Search&ObjectType=ServiceRe`;
     postData.esmLink = `${esmBaseLink}q%23&CommandData=RecId%2c%3d%2c0%2c${task.metadata.serviceRequestTechnicalID.values[0]}%2cstring%2cAND%7c#1615981839639`;
 
     if (type === 'case') {
-        postData.documentProperties = JSON.stringify(collectdocumentProperties());
+        postData.documentProperties = JSON.stringify(collectCaseDocumentProperties());
+    } else {
+        postData.documentProperties = JSON.stringify(collectContractDocumentProperties());
     }
-    // TODO: Add documentProperties for contract as well
     attachDialog.open();
     attachDialog.listen('MDCDialog:closed', (reason) => {
         if (reason.detail.action === 'ok') {
             showOverlay();
+            documents.items.forEach((doc) => {
+                if ($(`#upload-${doc.id}`).is(':checked')) {
+                    downloadFile(`/dms/r/${metaData.config.repositoryId}/o2/${doc.id}/v/current/b/main/c`, doc.caption);
+                }
+            });
             $.ajax({
                 timeout: 90000,
                 method: 'PUT',

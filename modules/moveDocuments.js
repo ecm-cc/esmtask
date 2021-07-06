@@ -16,7 +16,7 @@ module.exports = async (dossierID, documentURL, documentProperties, givenOptions
         if (documentProperties && documentProperties[document.id]) {
             promises.push(moveDocument(document, dossierID, type, documentProperties[document.id]));
         } else {
-            promises.push(moveDocument(document, dossierID, type));
+            promises.push(forceDeleteDocument(document.id));
         }
     });
     await Promise.all(promises);
@@ -32,6 +32,11 @@ async function moveDocument(document, dossierID, type, documentProperties) {
     } catch (err) {
         console.error(err);
     }
+}
+
+async function forceDeleteDocument(documentID) {
+    const documentMeta = await getDocumentMeta(documentID);
+    await deleteDocument(documentMeta);
 }
 
 async function downloadDocument(document) {
@@ -70,7 +75,6 @@ async function createDocument(documentMeta, dossierID, contentLocationUri, type,
     let dossierDocumentCategory;
     let dossierDocumentProperties;
     if (type === 'contract') {
-        // TODO: Check if this is stil right
         dossierDocumentCategory = dossierDocumentCategories.find((category) => category.displayname.includes('unterlage')); // Needed, but not good
         dossierDocumentProperties = await propertyMapping.getPropertiesByCategory(config.stage, dossierDocumentCategory.categoryID);
     } else {
@@ -84,23 +88,37 @@ async function createDocument(documentMeta, dossierID, contentLocationUri, type,
     httpOptions.data = {
         filename,
         sourceId: `/dms/r/${config.repositoryId}/source`,
+        alterationText: documentProperties.version ? documentProperties.version : '',
         contentLocationUri,
         parentId: dossierID,
         sourceProperties: {
-            properties: type === 'contract' ? getContractSourceProperties(dossierDocumentProperties, documentMeta)
+            properties: type === 'contract' ? getContractSourceProperties(dossierDocumentProperties, documentMeta, documentProperties)
                 : getCaseSourceProperties(dossierDocumentProperties, documentMeta, documentProperties),
         },
     };
     await axios(httpOptions);
 }
 
-function getContractSourceProperties(dossierDocumentProperties, documentMeta) {
+function getContractSourceProperties(dossierDocumentProperties, documentMeta, documentProperties) {
     // TODO: Check if this is still right
     return [
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,
-            values: ['Vertragsanlage'],
+            values: documentProperties ? [documentProperties.type] : ['Sonstige'],
         },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'Betreff').propertyKey,
+            values: documentProperties ? [documentProperties.subject] : [''],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'Ordner').propertyKey,
+            values: documentProperties ? [documentProperties.folder] : [''],
+        },
+        {
+            key: dossierDocumentProperties.find((property) => property.displayname === 'Belegdatum').propertyKey,
+            values: documentProperties ? [documentProperties.date] : [''],
+        },
+        // TODO: Until here
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
             values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID').value],

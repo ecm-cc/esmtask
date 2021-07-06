@@ -32,6 +32,7 @@ module.exports = (assetBasePath) => {
                 if (type === '') {
                     res.render('loading', {
                         title: 'Lädt..',
+                        assetBasePath,
                         stylesheet: `${assetBasePath}/global.css`,
                         script: `${assetBasePath}/loading.js`,
                         body: '/../views/loading.hbs',
@@ -42,6 +43,7 @@ module.exports = (assetBasePath) => {
                         title: task.subject,
                         stylesheet: `${assetBasePath}/global.css`,
                         script: `${assetBasePath}/task.js`,
+                        assetBasePath,
                         fontawesome: `${assetBasePath}/fontawesome.js`,
                         body: '/../views/task.hbs',
                         task,
@@ -52,6 +54,7 @@ module.exports = (assetBasePath) => {
                 } else {
                     res.render('succeded', {
                         title: task.subject,
+                        assetBasePath,
                         stylesheet: `${assetBasePath}/global.css`,
                         script: `${assetBasePath}/succeded.js`,
                         body: '/../views/succeded.hbs',

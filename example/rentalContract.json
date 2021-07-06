@@ -85,6 +85,13 @@
             ]
         },
         {
+            "key": "organizationalUnit",
+            "caption": "Organisationseinheit Nummer",
+            "values": [
+                "1121"
+            ]
+        },
+        {
             "key": "authorizedPerson1",
             "caption": "Zugriffsberechtigter 1",
             "values": [

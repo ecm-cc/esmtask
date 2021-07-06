@@ -7,7 +7,7 @@ module.exports = async (isCompleted, serviceRequestID, postData, config) => {
         headers: {
             Authorization: `rest_api_key=${config.ivantiAPIKey}`,
         },
-        //TODO: Change this for new CS values
+        // TODO: Change this for new CS values
         data: isCompleted ? getCompleteBody(postData) : getUpdateBody(postData),
     };
     await axios(ivantiOptions);

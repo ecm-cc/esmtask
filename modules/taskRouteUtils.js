@@ -34,9 +34,10 @@ async function getMetaData(task, assetBasePath, config) {
     const caseDocumentCategory = await propertyMapping.getCategory(config.stage, null, null, 'Legal - Vorgangsdokumente');
     const caseDocumentCategoryProperties = await propertyMapping.getPropertiesByCategory(config.stage, caseDocumentCategory.categoryID);
     const caseContractDocumentType = caseDocumentCategoryProperties.find((property) => property.displayname === 'Typ Vorgangsunterlage').propertyKey;
-    
+
     const contractDocumentCategory = await propertyMapping.getCategory(config.stage, null, null, 'Lieferanten IND - Vertragsunterlage');
     const contractDocumentCategoryProperties = await propertyMapping.getPropertiesByCategory(config.stage, contractDocumentCategory.categoryID);
+    // eslint-disable-next-line max-len
     const contractDocumentType = contractDocumentCategoryProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey;
     return {
         keys: {
@@ -57,7 +58,7 @@ async function getMetaData(task, assetBasePath, config) {
             caseContractType,
             organisationUnit,
             caseContractDocumentType,
-            contractDocumentType
+            contractDocumentType,
         },
         documentURL: await getDocumentURL(task, config),
         assetBasePath,

@@ -36,6 +36,13 @@
             ]
         },
         {
+            "key": "organizationalUnit",
+            "caption": "Organisationseinheit Nummer",
+            "values": [
+                "1121"
+            ]
+        },
+        {
             "key": "customer",
             "caption": "Kunde",
             "values": [

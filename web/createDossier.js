@@ -5,9 +5,21 @@ let isValidPartner = false;
 function showCreateDossier() {
     showOverlay();
     $('.button-cell').hide();
+    if (type === 'contract') {
+        clearAttachmentUploadBoxes();
+    }
     loadAsyncData().then(() => {
         $(`.create-dossier.${type}`).show();
         hideOverlay();
+    });
+}
+
+function clearAttachmentUploadBoxes() {
+    documents.items.forEach((doc) => {
+        if ($(`#upload-${doc.id}`).is(':checked')) {
+            $(`#upload-${doc.id}`).click();
+            $(`#upload-${doc.id}`).attr('disabled', 'disabled');
+        }
     });
 }
 
@@ -129,18 +141,16 @@ function getDMSBody(searchString, isAttachment) {
     const extendedProperties = {};
     const multivalueExtendedProperties = {};
     let objectDefinitionId;
-    if(isAttachment) {
-        if(type === 'contract') {
+    if (isAttachment) {
+        if (type === 'contract') {
             objectDefinitionId = metaData.keys.contractDocumentCategory;
         } else {
             objectDefinitionId = metaData.keys.caseDocumentCategory;
         }
+    } else if (type === 'contract') {
+        objectDefinitionId = metaData.keys.singleContractCategory;
     } else {
-        if(type === 'contract') {
-            objectDefinitionId = metaData.keys.singleContractCategory;
-        } else {
-            objectDefinitionId = metaData.keys.caseCategory;
-        }
+        objectDefinitionId = metaData.keys.caseCategory;
     }
     if (searchString) {
         extendedProperties[metaData.keys.partnerName] = searchString;
@@ -207,6 +217,7 @@ function saveContract() {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder mit gültigen Werten!');
         return;
     }
+    // TODO: Change this with collectCaseDocumentProperties like in attachDossier.js
     const postData = {
         type: 'contract',
         contractNumber: $('#contractNumberCreate').val(),

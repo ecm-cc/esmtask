@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+// eslint-disable-next-line import/no-unresolved
 async function loadDocuments() {
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = metaData.documentURL;
@@ -15,7 +16,7 @@ async function renderDocuments() {
     } else {
         const listHTML = [];
         let values;
-        if(type === 'case') {
+        if (type === 'case') {
             values = await loadDropdown(metaData.keys.caseContractDocumentType, null, null, true);
         } else {
             values = await loadDropdown(metaData.keys.contractDocumentType, null, null, true);
@@ -32,8 +33,9 @@ async function renderDocuments() {
             ${getAttachmentHeader(doc, fileName, fileType)}
             ${type === 'case' ? getCaseDocumentFields(doc, valuesHTML) : getContractDocumentFields(doc, valuesHTML)}
             `);
+
             const select = new mdc.select.MDCSelect(document.querySelector(`#type-${doc.id}`));
-            if(type === 'case') {
+            if (type === 'case') {
                 select.value = 'zu definieren';
             } else {
                 const checkbox = mdc.checkbox.MDCCheckbox.attachTo(document.querySelector(`#top-upload-${doc.id}`));
@@ -42,8 +44,15 @@ async function renderDocuments() {
             }
         });
         $('.attachments').show();
+        if (type === 'contract') {
+            documents.items.forEach((doc) => {
+                duDatepicker(`#date-${doc.id}`, { i18n: duDatepicker.i18n.de, root: '.mdc-layout-grid', format: 'dd.mm.yyyy' });
+                $(`#upload-${doc.id}`).on('click', () => {
+                    $(`#version-${doc.id}`).val('');
+                });
+            });
+        }
         documents.items.forEach((doc, i) => {
-            
         });
     }
 }
@@ -142,18 +151,6 @@ function getCaseDocumentFields(doc, valuesHTML) {
 function getContractDocumentFields(doc, valuesHTML) {
     return `
     <div class="attachment-element mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-        <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
-            <span class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
-                <span class="mdc-notched-outline__leading"></span>
-                <span class="mdc-notched-outline__notch">
-                    <span class="mdc-floating-label mdc-floating-label--float-above" id="subject-${doc.id}-label" style="">Betreff</span>
-                </span>
-                <span class="mdc-notched-outline__trailing"></span>
-            </span>
-            <input type="text" id="subject-${doc.id}" class="mdc-text-field__input" aria-labelledby="subject-${doc.id}-label">
-        </label>
-    </div>
-    <div class="attachment-element mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
         <div class="mdc-select mdc-select--outlined" id="type-${doc.id}" style="width: 100%;">
             <div class="mdc-select__anchor" tabindex="0" aria-disabled="false">
                 <span class="mdc-notched-outline mdc-notched-outline--upgraded">
@@ -181,6 +178,18 @@ function getContractDocumentFields(doc, valuesHTML) {
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="attachment-element mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+        <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
+            <span class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
+                <span class="mdc-notched-outline__leading"></span>
+                <span class="mdc-notched-outline__notch">
+                    <span class="mdc-floating-label mdc-floating-label--float-above" id="subject-${doc.id}-label" style="">Betreff</span>
+                </span>
+                <span class="mdc-notched-outline__trailing"></span>
+            </span>
+            <input type="text" id="subject-${doc.id}" class="mdc-text-field__input" aria-labelledby="subject-${doc.id}-label">
+        </label>
     </div>
     <div class="attachment-element mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
         <label class="mdc-text-field mdc-text-field--outlined mdc-text-field--label-floating">
@@ -215,7 +224,7 @@ function getContractDocumentFields(doc, valuesHTML) {
                 </span>
                 <span class="mdc-notched-outline__trailing"></span>
             </span>
-            <input type="text" id="version-${doc.id}" class="mdc-text-field__input" aria-labelledby="version-${doc.id}-label">
+            <input type="text" id="version-${doc.id}" class="mdc-text-field__input" aria-labelledby="version-${doc.id}-label" value="initiale Anlage">
         </label>
     </div>
     <div class="attachment-element mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
@@ -230,7 +239,7 @@ function getContractDocumentFields(doc, valuesHTML) {
                 </div>
                 <div class="mdc-checkbox__ripple"></div>
             </div>
-            <label for="upload-${doc.id}">Soll das Dokument in die Akte hochgeladen werden?</label>
+            <label for="upload-${doc.id}">Bei Verknüpfung mit Akte versionieren?</label>
         </div>
     </div>
     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12"></div>

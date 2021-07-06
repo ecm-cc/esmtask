@@ -17,11 +17,31 @@
     {{> input title="Vertragsnummer (intern)" id="contractNumberCreate" value="Vertragsart wählen" disabled=true}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+    {{> dropdown title="Vertragstyp Lieferant" id="contractType"}}
+</div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
     {{> dropdown title="Vertragsstatus" id="contractStatus"}}
 </div>
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
-    {{> dropdown title="Vertragstyp Lieferant" id="contractType"}}
+    {{> input title="Vertragsbezeichnung" id="contractTitle"}}
 </div>
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+    {{> dropdown title="Vertragsuntertyp" id="contractSubType"}}
+</div>
+
+{{#if task.responsiblePerson}} 
+    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+        {{> input title="Verantwortlich" id="contractResponsible" value=task.responsiblePerson.values.[0] disabled=true}} 
+    </div>
+{{else}}
+    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+        {{> input title="Verantwortlich" id="contractResponsible" value=task.contractResponsiblePerson.values.[0] disabled=true}} 
+    </div>
+{{/if}}
+<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6 create-dossier contract">
+    {{> input title="Zusätzliche Erläuterungen" id="contractAdditionalExplanations"}}
+</div>
+
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5 create-dossier contract">
     {{> input title="Geschäftspartnername" id="partnerName" helper="Bitte mindestens drei Zeichen eingeben"}}
 </div>
@@ -33,6 +53,7 @@
         </span>
     </a>
 </div>
+
 <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 create-dossier contract">
     {{> button title="Speichern" onclick="saveContract()"}}
 </div>

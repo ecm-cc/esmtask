@@ -100,7 +100,6 @@ async function createDocument(documentMeta, dossierID, contentLocationUri, type,
 }
 
 function getContractSourceProperties(dossierDocumentProperties, documentMeta, documentProperties) {
-    // TODO: Check if this is still right
     return [
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'Typ Vertragsunterlage (Lieferant)').propertyKey,
@@ -118,7 +117,6 @@ function getContractSourceProperties(dossierDocumentProperties, documentMeta, do
             key: dossierDocumentProperties.find((property) => property.displayname === 'Belegdatum').propertyKey,
             values: documentProperties ? [documentProperties.date] : [''],
         },
-        // TODO: Until here
         {
             key: dossierDocumentProperties.find((property) => property.displayname === 'ESM ID').propertyKey,
             values: [documentMeta.objectProperties.find((prop) => prop.name === 'ESM ID').value],

@@ -76,6 +76,10 @@ body {
     height: 100%;
 }
 
+.large-button {
+    height: 50px;
+}
+
 .cancel-snackbar {
     color: white;
 }
@@ -87,7 +91,7 @@ body {
 }
 
 .href_list {
-    text-decoration: none
+    text-decoration: none;
     color: black;
 }
 

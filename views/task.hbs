@@ -7,9 +7,11 @@
             </h1>
          </div>
          {{#eq task.metadata.contractType.values.[0] "rentalContract"}}
+            {{> abortContract}}
             {{> rentalContract task=task.metadata}}
          {{/eq}}
          {{#eq task.metadata.contractType.values.[0] "supplierContract"}}
+            {{> abortContract}}
             {{> supplierContract task=task.metadata}}
          {{/eq}}
          {{#eq task.metadata.contractType.values.[0] "customerContractDefaultDocuments"}}
@@ -20,7 +22,7 @@
          {{/eq}}
          {{> attachments}}
          {{#isContract task.metadata.contractType.values.[0]}}
-            {{> createContract}}
+            {{> createContract task=task.metadata}}
             {{> attachContract}}
             {{else}}
                {{> createCase}}
@@ -29,8 +31,9 @@
       </div>
    </div>
    {{> snackbar }}
-   {{> dialog question="Wollen Sie die ausgewählten Dokumente verknüpfen?" id="attach-dialog"}}
-   {{> dialog question="Wollen Sie diese Akte erstellen?" id="create-dialog"}}
+   {{> dialog question="Wollen Sie die ausgewählten Dokumente wirklich verknüpfen?" id="attach-dialog"}}
+   {{> dialog question="Wollen Sie diese Akte wirklich erstellen?" id="create-dialog"}}
+   {{> dialog question="Wollen Sie die Aufgabe wirklich abbrechen?" id="abort-dialog"}}
    <span id="data-container" data-id="{{metaData}}" data-task="{{taskString}}"></span>
 </body>
 

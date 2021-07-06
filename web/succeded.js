@@ -4,15 +4,17 @@ let task;
 let type;
 let metaData;
 let dialog;
+let patchDialog;
+let patchedDialog;
 let snackBar;
 
 window.onload = async () => {
     showOverlay();
     initMDCElements();
     task = $('#data-container').data('task');
-    // TODO: Is this still right?
     type = task.metadata.contractType.values[0] === 'supplierContract' || task.metadata.contractType.values[0] === 'rentalContract' ? 'contract' : 'case';
     metaData = $('#data-container').data('id');
+    await $.getScript(`${metaData.assetBasePath}/specialStatus.js`);
     await loadDossierLinks();
     hideOverlay();
 };
@@ -23,7 +25,9 @@ window.onload = async () => {
 function initMDCElements() {
     mdc.linearProgress.MDCLinearProgress.attachTo(document.querySelector('.mdc-linear-progress'));
     // eslint-disable-next-line no-unused-vars
-    dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
+    dialog = new mdc.dialog.MDCDialog(document.querySelector('#close-dialog'));
+    patchDialog = new mdc.dialog.MDCDialog(document.querySelector('#patch-dialog'));
+    patchedDialog = new mdc.dialog.MDCDialog(document.querySelector('#patched-dialog'));
     snackBar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
     snackBar.timeoutMs = 5000;
     [].map.call(document.querySelectorAll('.mdc-text-field'), (el) => new mdc.textField.MDCTextField(el));
@@ -47,7 +51,6 @@ async function loadDossierLinks() {
     });
     let internalNumber;
     if (type === 'contract') {
-        // TODO: Is this still right?
         internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vertragsnummer (intern)').value;
     } else {
         internalNumber = dossierResponse.objectProperties.find((prop) => prop.name === 'Vorgangsnummer (intern)').value;
@@ -61,26 +64,39 @@ async function loadDossierLinks() {
     Das ESM-Ticket ist ${esmLinkText} hinterlegt.`);
 }
 
-function closeServiceRequest() {
-    dialog.open();
-    dialog.listen('MDCDialog:closed', (reason) => {
-        if (reason.detail.action === 'ok') {
-            showOverlay();
-            $.ajax({
-                method: 'DELETE',
-                url: `/able-esmtask/task?taskID=${task.id}`,
-                dataType: 'json',
-            }).done(() => {
-                hideOverlay();
-                successSnackbar('Der Service-Request wurde erfolgreich geschlossen.');
+function closeServiceRequest(alreadyPatched) {
+    if (alreadyPatched) {
+        patchedDialog.open();
+        patchedDialog.listen('MDCDialog:closed', (reason) => {
+            if (reason.detail.action === 'ok') {
                 // eslint-disable-next-line no-restricted-globals
                 parent.postMessage('TaskApp.completeTask', location.origin);
-            }).fail((err) => {
-                failSnackbar(`Der Service-Request konnte aufgrund eines Fehlers nicht geschlossen werden: ${err.responseJSON ? err.responseJSON.reason : err}`);
-                console.error(err);
-            });
-        }
-    });
+            }
+        });
+    } else {
+        dialog.open();
+        dialog.listen('MDCDialog:closed', (reason) => {
+            if (reason.detail.action === 'ok') {
+                showOverlay();
+                $.ajax({
+                    method: 'DELETE',
+                    url: `/able-esmtask/task?taskID=${task.id}`,
+                    dataType: 'json',
+                    data: {
+                        abortText: $('#abortText').val(),
+                    },
+                }).done(() => {
+                    hideOverlay();
+                    successSnackbar('Der Service-Request wurde erfolgreich geschlossen.');
+                    // eslint-disable-next-line no-restricted-globals
+                    parent.postMessage('TaskApp.completeTask', location.origin);
+                }).fail((err) => {
+                    failSnackbar(`Der Service-Request konnte nicht geschlossen werden: ${err.responseJSON ? err.responseJSON.reason : err}`);
+                    console.error(err);
+                });
+            }
+        });
+    }
 }
 
 /**

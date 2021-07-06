@@ -6,13 +6,25 @@
                     {{task.subject}}
                 </h1>
             </div>
-            <!-- TODO: Add additional buttons/fields for cs -->
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                 <p id="contract-text" class="mdc-typography--body2"></p>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-                {{> button title="Service Request schließen" onclick="closeServiceRequest()"}}
+                {{> input title="Nachricht an Ticket-Ersteller" id="abortText"}}
             </div>
+            
+            {{#if task.metadata.patchState}}
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+                    {{> button title="ECM-Aufgabe schließen" onclick="closeServiceRequest(true)" additionalclass="button-center"}}
+                </div>
+            {{else}}
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+                    {{> button title="Service Request schließen" onclick="closeServiceRequest()" additionalclass="button-center"}}
+                </div>
+                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+                    {{> button title="Service Request schließen, ECM-Aufgabe offen lassen" onclick="patchServiceRequest()" additionalclass="button-center" large=true}}
+                </div>
+            {{/if}}
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                 <h2 class="mdc-typography--headline6">
                     Aus dem ESM übergebene Felder:
@@ -30,7 +42,9 @@
             {{#eq task.metadata.contractType.values.[0] "customerContract"}}
                 {{> customerContract task=task.metadata}}
             {{/eq}}
-            {{> dialog question="Wollen Sie den Service Request wirklich schließen?"}}
+            {{> dialog id="close-dialog" question="Wollen Sie den Service Request wirklich schließen?"}}
+            {{> dialog id="patch-dialog" question="Wollen Sie den Service Request wirklich schließen?"}}
+            {{> dialog id="patched-dialog" question="Wollen Sie die Aufgabe wirklich schließen?"}}
             {{> snackbar }}
             <span id="data-container" data-id="{{metaData}}" data-task="{{taskString}}"></span>
         </div>

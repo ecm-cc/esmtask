@@ -26,12 +26,24 @@ function clearAttachmentUploadBoxes() {
 async function loadAsyncData() {
     await generateInternalNumbers();
     if (type === 'contract') {
-        // TODO: Is this still relevant?
         await loadDropdown(metaData.keys.contractType, 'option-list-contractType');
         await loadDropdown(metaData.keys.contractStatus, 'option-list-contractStatus');
         $('#partnerName').on('keyup', async () => { await listenPartnerInput(); });
         selectContractType = new mdc.select.MDCSelect(document.querySelector('#contractType'));
+        if (task.metadata.contractType.values[0] === 'rentalContract') {
+            selectContractType.value = 'Lieferant - Mietvertrag Immobilien';
+            selectContractType.disabled = true;
+        }
         selectContractStatus = new mdc.select.MDCSelect(document.querySelector('#contractStatus'));
+        selectContractStatus.value = 'Initiierung';
+        selectContractStatus.disabled = true;
+
+        await loadDropdown(metaData.keys.contractSubType, 'option-list-contractSubType', selectContractType.value);
+        selectContractType.listen('MDCSelect:change', (el) => {
+            selectContractSubType.value = '';
+            loadDropdown(metaData.keys.contractSubType, 'option-list-contractSubType', selectContractType.value);
+        });
+        selectContractSubType = new mdc.select.MDCSelect(document.querySelector('#contractSubType'));
     } else {
         await loadDropdown(metaData.keys.caseContractType, 'option-list-caseContractType');
         await loadDropdown(metaData.keys.organisationUnit, 'option-list-organisationunit');
@@ -45,22 +57,21 @@ async function loadAsyncData() {
 
 async function generateInternalNumbers() {
     if (type === 'contract') {
-        // TODO: Is this still relevant?
         const generalContractInternalNumber = await loadNextInternalNumber(metaData.keys.generalContractCategory);
         const singleContractInternalNumber = await loadNextInternalNumber(metaData.keys.singleContractCategory);
-        if (task.metadata.contractType.values[0] === 'supplierContract') {
-            if (task.metadata.isGeneralAgreement.values[0] === 'true') {
-                $('#contractNumberCreate').val(generalContractInternalNumber);
-            } else {
-                $('#contractNumberCreate').val(singleContractInternalNumber);
-            }
-        }
         $('.option-1').on('click', () => {
             $('#contractNumberCreate').val(singleContractInternalNumber);
         });
         $('.option-2').on('click', () => {
             $('#contractNumberCreate').val(generalContractInternalNumber);
         });
+        if (task.metadata.contractType.values[0] === 'rentalContract') {
+            $('.option-1').click();
+            radioSingleContract.checked = true;
+        } else {
+            $('.option-2').click();
+            radioGeneralContract.checked = true;
+        }
     } else {
         const caseInternalNumber = await loadNextInternalNumber(metaData.keys.caseCategory);
         $('#caseNumberCreate').val(caseInternalNumber);
@@ -107,8 +118,7 @@ async function loadNextInternalNumber(categoryKey) {
     return latestInternalNumber;
 }
 
-async function loadDropdown(key, listID, searchString, isAttachment) {
-    // TODO: Add field for contractType when looking for "Vertragsuntertyp"
+async function loadDropdown(key, listID, searchString, isAttachment, isPartner) {
     const dropdownValues = await $.ajax({
         method: 'POST',
         url: `${metaData.config.host}/dms/r/${metaData.config.repositoryId}/validvalues/p/${key}?rownumber=1`,
@@ -116,9 +126,10 @@ async function loadDropdown(key, listID, searchString, isAttachment) {
             Accept: 'application/hal+json',
             'Content-Type': 'application/hal+json',
         },
-        data: getDMSBody(searchString, isAttachment),
+        data: getDMSBody(searchString, isAttachment, isPartner),
     });
     if (listID) {
+        $(`#${listID}`).html('');
         dropdownValues.values.forEach((dropdownType) => {
             $(`#${listID}`).append(`
                 <li class="mdc-list-item" data-value="${dropdownType.value}">
@@ -137,7 +148,7 @@ function getOrganisationUnit() {
     return orgUnit || '';
 }
 
-function getDMSBody(searchString, isAttachment) {
+function getDMSBody(searchString, isAttachment, isPartner) {
     const extendedProperties = {};
     const multivalueExtendedProperties = {};
     let objectDefinitionId;
@@ -153,8 +164,12 @@ function getDMSBody(searchString, isAttachment) {
         objectDefinitionId = metaData.keys.caseCategory;
     }
     if (searchString) {
-        extendedProperties[metaData.keys.partnerName] = searchString;
-        multivalueExtendedProperties[metaData.keys.partnerName] = { 1: searchString };
+        if (isPartner) {
+            extendedProperties[metaData.keys.partnerName] = searchString;
+            multivalueExtendedProperties[metaData.keys.partnerName] = { 1: searchString };
+        } else {
+            extendedProperties[metaData.keys.contractType] = searchString;
+        }
     }
     return JSON.stringify({
         dossierId: null,
@@ -179,7 +194,7 @@ async function listenPartnerInput() {
     isValidPartner = false;
     const input = $('#partnerName').val();
     if (input.length > 2) {
-        const results = await loadDropdown(metaData.keys.partnerName, null, input);
+        const results = await loadDropdown(metaData.keys.partnerName, null, input, false, true);
         const partnerHTML = [];
         results.values.forEach((partnerName, i) => partnerHTML.push(`
         <li class="mdc-list-item" role="menuitem" onclick="setPartner('${partnerName.value}', ${i})">
@@ -205,7 +220,6 @@ function setPartner(partnerName) {
 }
 
 function saveContract() {
-    // TODO: Is this still right?
     if (!$('.option-1').is(':checked') && !$('.option-2').is(':checked')) {
         failSnackbar('Bitte wählen Sie aus Einzelvertrag oder Rahmenvertrag!');
         return;
@@ -213,18 +227,23 @@ function saveContract() {
     if (!isValidPartner) {
         $('#partnerName').val('');
     }
+    // TODO: New validation for needed fields - Check with Kutzi
     if (!$('#contractNumberCreate').val() || selectContractStatus.value === '' || selectContractType.value === '' || !isValidPartner) {
         failSnackbar('Bitte befüllen Sie alle Eingabefelder mit gültigen Werten!');
         return;
     }
-    // TODO: Change this with collectCaseDocumentProperties like in attachDossier.js
     const postData = {
         type: 'contract',
         contractNumber: $('#contractNumberCreate').val(),
-        contractStatus: selectContractStatus.value,
         contractType: selectContractType.value,
+        contractStatus: selectContractStatus.value,
+        contractTitle: $('#contractTitle').val(),
+        contractSubType: selectContractSubType.value,
         partnerName: $('#partnerName').val(),
+        contractValue: task.metadata.contractValue ? task.metadata.contractValue.values[0] : null,
+        responsiblePerson: $('#contractResponsible').val(),
         categoryKey: $('.option-1').is(':checked') ? metaData.keys.singleContractCategory : metaData.keys.generalContractCategory,
+        documentProperties: JSON.stringify(collectContractDocumentProperties()),
     };
     sendDossier(postData);
 }
@@ -245,12 +264,27 @@ function saveCase() {
         categoryKey: metaData.keys.caseCategory,
         esmLink,
         orgunitContact: task.metadata.responsiblePerson.values[0],
-        documentProperties: JSON.stringify(collectdocumentProperties()),
+        documentProperties: JSON.stringify(collectCaseDocumentProperties()),
     };
     sendDossier(postData);
 }
 
-function collectdocumentProperties() {
+function collectContractDocumentProperties() {
+    const documentProperties = {};
+    documents.items.forEach((doc) => {
+        dateString = $(`#date-${doc.id}`).val();
+        documentProperties[doc.id] = {
+            subject: $(`#subject-${doc.id}`).val(),
+            type: $(`#type-${doc.id} .mdc-list .mdc-list-item--selected`).data('value'),
+            folder: $(`#folder-${doc.id}`).val(),
+            date: dateString !== '' ? `${dateString.substring(6)}-${dateString.substring(3, 5)}-${dateString.substring(0, 2)}` : dateString,
+            version: $(`#version-${doc.id}`).val(),
+        };
+    });
+    return documentProperties;
+}
+
+function collectCaseDocumentProperties() {
     const documentProperties = {};
     documents.items.forEach((doc) => {
         documentProperties[doc.id] = {

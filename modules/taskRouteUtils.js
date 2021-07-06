@@ -21,6 +21,7 @@ async function getMetaData(task, assetBasePath, config) {
     const contractDesignation = contractProperties.find((property) => property.displayname === 'Vertragsbezeichnung').propertyKey;
     const contractStatus = contractProperties.find((property) => property.displayname === 'Vertragsstatus').propertyKey;
     const contractType = contractProperties.find((property) => property.displayname === 'Vertragstyp Lieferant').propertyKey;
+    const contractSubType = contractProperties.find((property) => property.displayname === 'Vertragsuntertyp').propertyKey;
     const partnerName = contractProperties.find((property) => property.displayname === 'Geschäftspartnername').propertyKey;
     const caseCategory = await propertyMapping.getCategory(config.stage, null, null, 'Legal - Vorgangsakte');
     const caseProperties = await propertyMapping.getPropertiesByCategory(config.stage, caseCategory.categoryID);
@@ -50,6 +51,7 @@ async function getMetaData(task, assetBasePath, config) {
             contractDesignation,
             contractStatus,
             contractType,
+            contractSubType,
             partnerName,
             caseNumberInternal,
             caseDesignation,
@@ -80,12 +82,12 @@ async function getDocumentURL(task, config) {
 async function getIvantiBody(contractID, config, options, type) {
     return {
         link: `${config.host}/dms/r/${config.repositoryId}/o2/${contractID}`,
-        caseID: await getCaseNumber(contractID, config, options, type),
+        internalNumber: await getInternalNumber(contractID, config, options, type),
         owner: await getCurrentUserUPN(config, options),
     };
 }
 
-async function getCaseNumber(contractID, config, options, type) {
+async function getInternalNumber(contractID, config, options, type) {
     let caseNumber = '';
     const httpOptions = JSON.parse(JSON.stringify(options));
     httpOptions.url = `${config.host}/dms/r/${config.repositoryId}/o2/${contractID}`;
@@ -133,7 +135,9 @@ async function attachDossier(taskID, dossierID, type, documentProperties, esmLin
         await updateServiceRequest(false, task.metadata.serviceRequestTechnicalID.values[0], ivantiBody, config, options);
     }
     if (type === 'case') {
-        await setESMLink(dossierID, esmLink, options, config);
+        await setESMLink(dossierID, esmLink, options, config, type);
+    } else {
+        // TODO: Set ESM Link for contracts as well - when field is there
     }
     await setTaskState(task, dossierID, options, config);
 }
@@ -143,7 +147,7 @@ module.exports = {
     getMetaData,
     getDocumentURL,
     getIvantiBody,
-    getCaseNumber,
+    getInternalNumber,
     getCurrentUserUPN,
     createDossier,
     attachDossier,

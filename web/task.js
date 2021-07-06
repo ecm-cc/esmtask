@@ -8,12 +8,16 @@ let documents;
 let metaData;
 let createDialog;
 let attachDialog;
+let abortDialog;
 let menu;
 let selectContractStatus;
 let selectContractType;
+let selectContractSubType;
 let selectCaseContractType;
 let selectCaseType;
 let selectCaseOrganisationunit;
+let radioSingleContract;
+let radioGeneralContract;
 const options = {
     headers: {
         Accept: 'application/hal+json',
@@ -31,6 +35,7 @@ window.onload = async () => {
     await $.getScript(`${metaData.assetBasePath}/createDossier.js`);
     await $.getScript(`${metaData.assetBasePath}/attachDossier.js`);
     await $.getScript(`${metaData.assetBasePath}/loadAttachments.js`);
+    await $.getScript(`${metaData.assetBasePath}/specialStatus.js`);
     documents = await loadDocuments(metaData);
     await renderDocuments();
     hideOverlay();
@@ -42,6 +47,9 @@ window.onload = async () => {
 function initMDCElements() {
     attachDialog = new mdc.dialog.MDCDialog(document.querySelector('#attach-dialog'));
     createDialog = new mdc.dialog.MDCDialog(document.querySelector('#create-dialog'));
+    if (document.querySelector('#abort-dialog')) {
+        abortDialog = new mdc.dialog.MDCDialog(document.querySelector('#abort-dialog'));
+    }
     [].map.call(document.querySelectorAll('.mdc-text-field'), (el) => new mdc.textField.MDCTextField(el));
     [].map.call(document.querySelectorAll('.mdc-list'), (el) => new mdc.list.MDCList(el));
     $(() => {
@@ -58,11 +66,12 @@ function initMDCElements() {
         $('.date-field').val(date.toLocaleString('de-DE', dateOptions));
     }
     if (type === 'contract') {
-        // TODO: Is this still right?
-        // menu = new mdc.menu.MDCMenu(document.querySelector('#partner-options'));
-        const radio = mdc.radio.MDCRadio.attachTo(document.querySelector('.mdc-radio'));
+        menu = new mdc.menu.MDCMenu(document.querySelector('#partner-options'));
+        radioSingleContract = mdc.radio.MDCRadio.attachTo(document.querySelector('.radio-1'));
+        radioGeneralContract = mdc.radio.MDCRadio.attachTo(document.querySelector('.radio-2'));
         const formField = mdc.formField.MDCFormField.attachTo(document.querySelector('.mdc-form-field'));
-        formField.input = radio;
+        formField.input = radioSingleContract;
+        formField.input = radioGeneralContract;
     }
 }
 

@@ -85,6 +85,10 @@ async function createDocument(postData, contentLocationUri, filename, config, op
                     key: esmDocumentProperties.find((property) => property.displayname === 'ESM Status').propertyKey,
                     values: ['Offen'],
                 },
+                {
+                    key: esmDocumentProperties.find((property) => property.displayname === 'Betreff').propertyKey,
+                    values: [filename.split('.')[0]],
+                },
             ],
         },
     };

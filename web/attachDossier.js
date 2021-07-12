@@ -133,6 +133,9 @@ function attachDossier(dossierID) {
         postData.documentProperties = JSON.stringify(collectCaseDocumentProperties());
     } else {
         postData.documentProperties = JSON.stringify(collectContractDocumentProperties());
+        if (documents.items.find((doc) => $(`#upload-${doc.id}`).is(':checked'))) {
+            $('#attach-dialog-content').append(' Die zur Versionierung ausgewählten Dokumente werden herunterladen.');
+        }
     }
     attachDialog.open();
     attachDialog.listen('MDCDialog:closed', (reason) => {
